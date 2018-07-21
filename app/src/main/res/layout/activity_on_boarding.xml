@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.tylerwalker.buyyouadrink.activity.onboarding.OnBoarding">
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/arimo_bold"
+        android:text="NEXT"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/on_boarding_background_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="handleNext"/>
+
+    <Button
+        android:id="@+id/skip_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/transparent"
+        android:text="SKIP"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/on_boarding_background_image"
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="transitionToHome"/>
+
+    <com.example.tylerwalker.buyyouadrink.view.BlurryView
+        android:id="@+id/on_boarding_background_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/search" />
+
+    </com.example.tylerwalker.buyyouadrink.view.BlurryView>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/onboarding_pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="96dp"
+        android:background="@drawable/form_container"
+        app:layout_constraintBottom_toTopOf="@id/next_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/on_boarding_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp"></android.support.design.widget.TabLayout>
+    </android.support.v4.view.ViewPager>
+
+</android.support.constraint.ConstraintLayout>
