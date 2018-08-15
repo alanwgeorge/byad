@@ -6,11 +6,459 @@
     android:layout_height="match_parent"
     tools:context="com.example.tylerwalker.buyyouadrink.activity.profile.ProfileActivity">
 
+    <com.example.tylerwalker.buyyouadrink.view.RoundedMask
+        android:id="@+id/profile_cover_image"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/profile_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="95dp"
+        android:background="@drawable/profile_image"
+        android:elevation="@dimen/project_image_elevation"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profile_cover_image"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
+    <ImageView
+        android:id="@+id/profile_friends_button_frame"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:background="@drawable/circular_porthole_frame"
+        android:elevation="@dimen/project_image_elevation"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_friends_button"
+        app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
+        app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
+        app:layout_constraintTop_toTopOf="@+id/profile_friends_button" />
+
+
+    <ImageView
+        android:id="@+id/profile_friends_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="8dp"
+
+        android:background="@drawable/circular_porthole_gradient"
+        android:elevation="@dimen/project_image_elevation"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+        app:layout_constraintEnd_toStartOf="@+id/profile_image"
+        app:layout_constraintTop_toTopOf="@+id/profile_image" />
+
     <TextView
-        android:id="@+id/user_id_temp"
+        android:id="@+id/friend_count_text"
+        android:layout_width="30dp"
+        android:layout_height="14dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:elevation="@dimen/project_image_elevation"
+
+        android:fontFamily="@font/arimo_bold"
+        android:text="26"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
+        app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
+        app:layout_constraintTop_toTopOf="@+id/profile_friends_button" />
+
+    <TextView
+        android:id="@+id/profile_friend_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="144dp"
-        tools:layout_editor_absoluteY="89dp" />
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/arimo_bold"
+        android:text="Friends"
+        android:textAlignment="center"
+        android:elevation="@dimen/project_image_elevation"
+
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
+        app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
+        app:layout_constraintTop_toBottomOf="@+id/friend_count_text" />
+
+    <ImageView
+        android:id="@+id/profile_groups_button_frame"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:background="@drawable/circular_porthole_frame"
+        android:elevation="@dimen/project_image_elevation"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_groups_button"
+        app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
+        app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
+        app:layout_constraintTop_toTopOf="@+id/profile_groups_button" />
+
+
+    <ImageView
+        android:id="@+id/profile_groups_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circular_porthole_gradient"
+        android:elevation="@dimen/project_image_elevation"
+
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+        app:layout_constraintStart_toEndOf="@+id/profile_image"
+        app:layout_constraintTop_toTopOf="@+id/profile_image" />
+    <TextView
+        android:id="@+id/group_count_text"
+        android:layout_width="30dp"
+        android:layout_height="14dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/arimo_bold"
+        android:elevation="@dimen/project_image_elevation"
+
+        android:text="3"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
+        app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
+        app:layout_constraintTop_toTopOf="@+id/profile_groups_button" />
+
+    <TextView
+        android:id="@+id/profile_group_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/arimo_bold"
+        android:text="Groups"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:elevation="@dimen/project_image_elevation"
+
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
+        app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
+        app:layout_constraintTop_toBottomOf="@+id/group_count_text" />
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/profile_user_button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:elevation="@dimen/project_image_elevation"
+        android:innerRadius="0dp"
+        android:shape="ring"
+        android:thicknessRatio="1.9"
+        app:cardCornerRadius="15dp"
+        app:layout_constraintEnd_toStartOf="@+id/profile_conversation_button"
+        app:layout_constraintTop_toTopOf="@+id/profile_conversation_button">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+
+
+            android:layout_marginTop="5dp"
+            android:src="@drawable/user"
+
+            app:layout_constraintEnd_toStartOf="@+id/profile_user_button"
+            app:layout_constraintStart_toStartOf="@+id/profile_user_button"
+            app:layout_constraintTop_toTopOf="@+id/profile_user_button"></ImageView>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/profile_conversation_button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:elevation="@dimen/project_image_elevation"
+        android:innerRadius="0dp"
+        android:shape="ring"
+        android:thicknessRatio="1.9"
+        app:cardCornerRadius="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/profile_image"
+        app:layout_constraintEnd_toEndOf="@+id/profile_image"
+        app:layout_constraintStart_toStartOf="@+id/profile_image">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+
+
+            android:layout_marginTop="5dp"
+            android:src="@drawable/conversation"
+
+            app:layout_constraintEnd_toStartOf="@+id/profile_conversation_button"
+            app:layout_constraintStart_toStartOf="@+id/profile_conversation_button"
+            app:layout_constraintTop_toTopOf="@+id/profile_conversation_button"></ImageView>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/profile_eye_button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:elevation="@dimen/project_image_elevation"
+        android:innerRadius="0dp"
+        android:shape="ring"
+        android:thicknessRatio="1.9"
+        app:cardCornerRadius="15dp"
+        app:layout_constraintStart_toEndOf="@+id/profile_conversation_button"
+        app:layout_constraintTop_toTopOf="@+id/profile_conversation_button">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+
+
+            android:layout_marginTop="7.5dp"
+            android:layout_marginLeft="2.5dp"
+            android:background="@drawable/eye"
+
+            app:layout_constraintEnd_toStartOf="@+id/profile_eye_button"
+            app:layout_constraintStart_toStartOf="@+id/profile_eye_button"
+            app:layout_constraintTop_toTopOf="@+id/profile_eye_button"></ImageView>
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:id="@+id/profile_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/arimo_bold"
+        android:text="My Name"
+        android:textAlignment="textStart"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/profile_image"
+        app:layout_constraintStart_toStartOf="@+id/profile_image"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+
+    <TextView
+        android:id="@+id/profile_location_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/arimo_bold"
+        android:text="Location"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@+id/profile_name_text"
+        app:layout_constraintStart_toStartOf="@+id/profile_name_text"
+        app:layout_constraintTop_toBottomOf="@+id/profile_name_text" />
+
+    <TextView
+        android:id="@+id/profile_caption_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/arimo_bold"
+        android:text="Caption"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/profile_location_text"
+        app:layout_constraintStart_toStartOf="@+id/profile_location_text"
+        app:layout_constraintTop_toBottomOf="@+id/profile_location_text" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/arimo_bold"
+        android:text="My highlights"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_caption_text" />
+
+    <ImageView
+        android:id="@+id/profile_highlight_image_1"
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/profile_highlight_image_2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView15"
+        app:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal" />
+
+    <ImageView
+        android:id="@+id/profile_highlight_image_3"
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/profile_highlight_image_2"
+        app:layout_constraintTop_toTopOf="@+id/profile_highlight_image_1"
+        app:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal" />
+
+    <ImageView
+        android:id="@+id/profile_highlight_image_2"
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        app:layout_constraintEnd_toStartOf="@+id/profile_highlight_image_3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/profile_highlight_image_1"
+        app:layout_constraintTop_toTopOf="@+id/profile_highlight_image_1"
+        app:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal" />
+
+    <TextView
+        android:id="@+id/profile_status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/arimo_bold"
+        android:text="Status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_highlight_image_1" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView9"
+        app:layout_constraintTop_toTopOf="@+id/imageView9"
+        app:srcCompat="@color/blue" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/profile_image"
+        app:layout_constraintEnd_toStartOf="@+id/imageView6"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView8"
+        app:layout_constraintTop_toTopOf="@+id/imageView8"
+        app:srcCompat="@android:color/holo_red_dark" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/profile_image"
+        app:layout_constraintEnd_toStartOf="@+id/imageView9"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView7"
+        app:layout_constraintTop_toTopOf="@+id/imageView7"
+        app:srcCompat="@color/yellow" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageView8"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_status_text"
+        app:srcCompat="@android:color/holo_green_light" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Online"
+        android:textAlignment="center"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView7"
+        app:layout_constraintStart_toStartOf="@+id/imageView7"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Away"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintHorizontal_bias="0.785"
+        app:layout_constraintStart_toStartOf="@+id/imageView8"
+        app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Busy"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView9"
+        app:layout_constraintStart_toStartOf="@+id/imageView9"
+        app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/arimo_bold"
+        android:text="Other"
+        android:textAlignment="center"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView6"
+        app:layout_constraintStart_toStartOf="@+id/imageView6"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+
+    <Button
+        android:id="@+id/profile_buy_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_primary"
+        android:fontFamily="@font/arimo_bold"
+        android:text="Buy Me A Drink"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:onClick="transitionToMap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+
 </android.support.constraint.ConstraintLayout>

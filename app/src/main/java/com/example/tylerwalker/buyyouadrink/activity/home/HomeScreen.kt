@@ -5,18 +5,20 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import com.example.tylerwalker.buyyouadrink.R
 import com.example.tylerwalker.buyyouadrink.activity.Settings.SettingsActivity
+import com.example.tylerwalker.buyyouadrink.activity.messages.MessagesActivity
 import com.example.tylerwalker.buyyouadrink.activity.profile.ProfileActivity
 import com.example.tylerwalker.buyyouadrink.module.App
 import com.example.tylerwalker.buyyouadrink.model.Coordinates
+import com.example.tylerwalker.buyyouadrink.model.Drink
 import com.example.tylerwalker.buyyouadrink.model.User
 import com.example.tylerwalker.buyyouadrink.service.LocationService
 import javax.inject.Inject
@@ -35,17 +37,20 @@ class HomeScreen : AppCompatActivity() {
     val image_url_2 = "https://res.cloudinary.com/wells-fargo/image/upload/v1531196082/selfie_400_400.jpg"
 
     val testUsers = arrayOf(
-            User(1,"Tyler", "Walker", Coordinates(0F, 0F), "I like to drink coffee.", image_url = image_url),
-            User(2,"Kelsi", "Yuan", Coordinates(1F, 1F), "Let's have some cocktails tonight!", image_url = image_url_2))
+            User(1,"Tyler", "Walker", Coordinates(37.8716F, -122.2727F), "Beer", "I like to drink coffee.", image_url = image_url),
+            User(2,"Kelsi", "Yuan", Coordinates(37.7749F, 122.4194F), "Tea","Let's have some cocktails tonight!", image_url = image_url_2))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
+
         setContentView(R.layout.activity_home)
 
         App().getComponent().inject(this)
 
         setupPresenter()
         setupRecyclerView()
+        setupToolbar()
 
     }
 
@@ -65,6 +70,19 @@ class HomeScreen : AppCompatActivity() {
         }
     }
 
+    private fun setupToolbar() {
+        val settingsImage = findViewById<ImageView>(R.id.toolbar_image_left)
+        val messagesImage = findViewById<ImageView>(R.id.toolbar_image_right)
+
+        settingsImage.setOnClickListener {
+            transitionToSettings(it)
+        }
+
+        messagesImage.setOnClickListener {
+            transitionToMessages(it)
+        }
+    }
+
     fun transitionToProfile(user_id: Int) {
         val intent = Intent(this, ProfileActivity::class.java)
         intent.putExtra("user_id", user_id)
@@ -73,6 +91,11 @@ class HomeScreen : AppCompatActivity() {
 
     fun transitionToSettings(view: View) {
         val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun transitionToMessages(view: View) {
+        val intent = Intent(this, MessagesActivity::class.java)
         startActivity(intent)
     }
 

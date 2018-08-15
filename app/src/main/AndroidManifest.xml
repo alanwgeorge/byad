@@ -18,6 +18,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCMNuuf-cEnlNkHxfBtUd2l3sihSRl3008" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <activity
             android:name=".activity.splash.SplashScreen"
             android:theme="@style/SplashTheme">
@@ -39,7 +49,9 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".activity.login.SignUpActivity" />
-        <activity android:name=".activity.onboarding.OnBoarding"></activity>
+        <activity android:name=".activity.onboarding.OnBoarding" />
+        <activity android:name=".activity.messages.MessagesActivity" />
+        <activity android:name=".activity.map.MapActivity"></activity>
     </application>
 
 </manifest>

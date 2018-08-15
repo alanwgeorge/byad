@@ -15,6 +15,7 @@ import com.example.tylerwalker.buyyouadrink.activity.onboarding.OnBoarding
 import com.example.tylerwalker.buyyouadrink.model.AuthResponse
 import com.example.tylerwalker.buyyouadrink.module.App
 import com.example.tylerwalker.buyyouadrink.service.AuthService
+import com.google.gson.Gson
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -27,6 +28,7 @@ import javax.inject.Inject
  * A login screen that offers login via email/password.
  */
 class LoginActivity : AppCompatActivity() {
+    val SHARED_PREFERENCES_CURRENT_USER_KEY = "current_user"
 
     @Inject lateinit var authService: AuthService
 
@@ -121,6 +123,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun handleLoginResponse(response: AuthResponse) {
         var intent: Intent
+
+        val json = Gson().toJson(response.user)
+        sharedPreferences.edit().putString(SHARED_PREFERENCES_CURRENT_USER_KEY, json).apply()
 
         if (sharedPreferences.getBoolean("firstrun", true)) {
             sharedPreferences.edit().putBoolean("firstrun", false).commit()
