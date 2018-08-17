@@ -9,6 +9,7 @@ import android.view.View
 import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
+import android.widget.Button
 import com.example.tylerwalker.buyyouadrink.R
 import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
 import com.example.tylerwalker.buyyouadrink.activity.onboarding.OnBoarding
@@ -22,6 +23,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 import kotlinx.android.synthetic.main.activity_new_login.*
+import kotlinx.android.synthetic.main.activity_new_login.view.*
 import javax.inject.Inject
 
 /**
@@ -44,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
         sharedPreferences  = getSharedPreferences("com.example.tylerwalker.buyyouadrink", Context.MODE_PRIVATE)
 
         sign_in_button.setOnClickListener { attemptLogin() }
+        sign_up_button.findViewById<Button>(R.id.primary_button)?.let { it.text = "REGISTER"; it.setOnClickListener { transitionToSignUp(it) } }
     }
 
     private fun attemptLogin() {
@@ -122,6 +125,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun handleLoginResponse(response: AuthResponse) {
+        if (!response.status) {
+            clearForms()
+            return
+        }
+
         var intent: Intent
 
         val json = Gson().toJson(response.user)
@@ -139,6 +147,11 @@ class LoginActivity : AppCompatActivity() {
     fun transitionToSignUp(view: View) {
         val intent = Intent(this, SignUpActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun clearForms() {
+        password_text.setText("")
+        username_text.setText("")
     }
 
 }

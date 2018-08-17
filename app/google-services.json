@@ -1,0 +1,104 @@
+{
+  "project_info": {
+    "project_number": "587225191822",
+    "firebase_url": "https://byad-1533487937575.firebaseio.com",
+    "project_id": "byad-1533487937575",
+    "storage_bucket": "byad-1533487937575.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587225191822:android:62a76f26f21e485c",
+        "android_client_info": {
+          "package_name": "com.example.tylerwalker.buyyouadrink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587225191822-8b2i2fp64a1vi72lksbh2bd322depqsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDRk0MWCbeEJwVfWwQ-2j0OHA-uLLZbgg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587225191822:android:43cbbdc1e8cb06f3",
+        "android_client_info": {
+          "package_name": "com.example.tylerwalker.buyyouadrink.live"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587225191822-8b2i2fp64a1vi72lksbh2bd322depqsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDRk0MWCbeEJwVfWwQ-2j0OHA-uLLZbgg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587225191822:android:14ca3899620c6469",
+        "android_client_info": {
+          "package_name": "com.example.tylerwalker.buyyouadrink.mock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587225191822-8b2i2fp64a1vi72lksbh2bd322depqsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDRk0MWCbeEJwVfWwQ-2j0OHA-uLLZbgg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

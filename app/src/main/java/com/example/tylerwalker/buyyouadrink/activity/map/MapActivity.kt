@@ -13,18 +13,13 @@ import com.example.tylerwalker.buyyouadrink.model.Drink
 import com.example.tylerwalker.buyyouadrink.model.User
 import com.example.tylerwalker.buyyouadrink.service.YelpService
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
 import com.yelp.fusion.client.models.SearchResponse
 import kotlinx.android.synthetic.main.activity_map.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -75,13 +70,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         sourceUser?.let {
             val sourceLoc = LatLng(it.location.latitude.toDouble(), it.location.longitude.toDouble())
-            sourceMarker = map?.addMarker(MarkerOptions().position(sourceLoc).title("${it.first_name} ${it.last_name}"))
+            sourceMarker = map?.addMarker(MarkerOptions().position(sourceLoc).title("${it.first_name} ${it.last_name}").icon(BitmapDescriptorFactory.defaultMarker()))
             builder.include(sourceMarker?.position)
         }
 
         targetUser?.let {
             val targetLoc = LatLng(it.location.latitude.toDouble(), it.location.longitude.toDouble())
-            targetMarker = map?.addMarker(MarkerOptions().position(targetLoc).title("${it.first_name} ${it.last_name}"))
+            targetMarker = map?.addMarker(MarkerOptions().position(targetLoc).title("${it.first_name} ${it.last_name}").icon(BitmapDescriptorFactory.defaultMarker()))
             builder.include(targetMarker?.position)
         }
 
@@ -132,10 +127,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     it.categories.map {
 //                        Log.d("marker", "category: ${it.title}, alias: ${it.alias}")
                         when (it.alias) {
-                            "coffee" -> marker?.let { markers[Drink.Coffee]?.add(it) }
-                            "beer_and_wine" -> marker?.let { markers[Drink.Beer]?.add(it) }
-                            "juicebars" -> marker?.let { markers[Drink.Juice]?.add(it) }
-                            "bubbletea" -> marker?.let { markers[Drink.BubbleTea]?.add(it) }
+                            "coffee" -> marker?.let { it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.coffee)); markers[Drink.Coffee]?.add(it) }
+                            "beer_and_wine" -> marker?.let {  it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.beer)); markers[Drink.Beer]?.add(it) }
+                            "juicebars" -> marker?.let {  it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.juice));markers[Drink.Juice]?.add(it) }
+                            "bubbletea" -> marker?.let {  it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.wine));markers[Drink.BubbleTea]?.add(it) }
                             else -> {}
                         }
                     }

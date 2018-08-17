@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.tylerwalker.buyyouadrink.activity.login.SignUpActivity">
+
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.tylerwalker.buyyouadrink.activity.login.SignUpViewModel" />
+    </data>
+        
+<android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tylerwalker.buyyouadrink.activity.login.SignUpActivity">
+    >
 
     <com.example.tylerwalker.buyyouadrink.view.BlurryView
         android:id="@+id/login_background_image"
@@ -58,7 +67,9 @@
             android:background="@drawable/form_input"
             android:ems="10"
             android:hint="Full Name"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:text="@={viewmodel.name}"
+            />
 
         <EditText
             android:id="@+id/email"
@@ -69,7 +80,9 @@
             android:background="@drawable/form_input"
             android:ems="10"
             android:hint="Email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:text="@={viewmodel.email}"
+            />
 
         <EditText
             android:id="@+id/register_password_text"
@@ -80,7 +93,9 @@
             android:background="@drawable/form_input"
             android:ems="10"
             android:hint="Password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:text="@={viewmodel.password}"
+            />
 
         <EditText
             android:id="@+id/register_password_text_confirm"
@@ -91,7 +106,9 @@
             android:background="@drawable/form_input"
             android:ems="10"
             android:hint="Confirm Password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:text="@={viewmodel.confirm}"
+            />
 
         <TextView
             android:id="@+id/textView11"
@@ -121,6 +138,8 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/login_background_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="@{viewmodel.register}"/>
 
 </android.support.constraint.ConstraintLayout>
+</layout>
