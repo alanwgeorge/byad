@@ -31,7 +31,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/on_boarding_background_image"
         app:layout_constraintStart_toStartOf="parent"
-        android:onClick="transitionToHome"/>
+        android:onClick="transitionToSetupProfile"/>
 
     <com.example.tylerwalker.buyyouadrink.view.BlurryView
         android:id="@+id/on_boarding_background_image"

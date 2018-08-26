@@ -48,6 +48,10 @@ android {
     dataBinding {
         enabled = true
     }
+
+    lintOptions {
+        lintConfig file("lint.xml")
+    }
 }
 
 dependencies {
@@ -99,6 +103,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:$rootProject.ext.googlePlayVersion"
     implementation "com.google.android.gms:play-services-plus:$rootProject.ext.googlePlayVersion"
     implementation "com.google.android.gms:play-services-maps:$rootProject.ext.googlePlayVersion"
+    implementation "com.google.android.gms:play-services-places:$rootProject.ext.googlePlayVersion"
 
     //Blurry
     implementation "jp.wasabeef:blurry:$rootProject.ext.blurryVersion"
@@ -113,6 +118,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-auth:16.0.3'
     implementation 'com.github.FrangSierra:RxFirebase:1.5.0'
+    implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-firestore:17.1.0'
 
 
 }

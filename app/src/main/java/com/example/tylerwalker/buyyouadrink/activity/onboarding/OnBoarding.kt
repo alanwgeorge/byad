@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import com.example.tylerwalker.buyyouadrink.R
 import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
+import com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity
 
 class OnBoarding : AppCompatActivity() {
 
@@ -36,11 +37,16 @@ class OnBoarding : AppCompatActivity() {
             when(pager.currentItem) {
                 0 -> pager.setCurrentItem(1)
                 1 -> pager.setCurrentItem(2)
-                else -> transitionToHome(view)
+                else -> transitionToSetupProfile(view)
             }
 
     fun transitionToHome(view: View) {
         val intent = Intent(this, HomeScreen::class.java)
+        startActivity(intent)
+    }
+
+    fun transitionToSetupProfile(view: View) {
+        val intent = Intent(this, SetupProfileActivity::class.java)
         startActivity(intent)
     }
 

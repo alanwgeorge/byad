@@ -1,0 +1,5 @@
+<lint>
+    <issue id="InvalidPackage">
+        <ignore path="**/grpc-core-1.12.0.jar" />
+    </issue>
+</lint>

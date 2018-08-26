@@ -25,23 +25,23 @@ class ProfileActivity : AppCompatActivity() {
     @Inject
     lateinit var locationService: LocationService
 
-    var user_id: Int = 0
+    var user_id: String = "0"
     var user: User? = null
 
     val mock_image_url = "https://bloximages.chicago2.vip.townnews.com/willmarradio.com/content/tncms/assets/v3/editorial/8/73/873d38ba-8bf1-11e7-80ce-93f5c9c5517d/59a41515a69cd.image.jpg"
     val mock_image_url_2 = "https://res.cloudinary.com/wells-fargo/image/upload/v1531196082/selfie_400_400.jpg"
 
-    val users = arrayOf(User(1, "Tyler", "Walker", Coordinates(37.8716F, -122.2727F), "Beer", "Drinking beer is the best", mock_image_url),
-            User(2, "Kelsi", "Yuan", Coordinates(37.7749F, -122.4194F), "Tea", "Tea is the best!", mock_image_url_2))
+    val users = arrayOf(User("1", "Tyler", "Walker", Coordinates(37.8716F, -122.2727F), "Beer", "Drinking beer is the best", mock_image_url),
+            User("2", "Kelsi", "Yuan", Coordinates(37.7749F, -122.4194F), "Tea", "Tea is the best!", mock_image_url_2))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        App().getComponent().inject(this)
+        App().getComponent(this).inject(this)
 
         val context: Context = this
-        user_id = intent.extras.getInt("user_id")
+        user_id = intent.extras.getString("user_id")
         user = users.find { it.user_id == user_id }
 
         user?.apply {

@@ -12,6 +12,7 @@ class RoundedMask(context: Context, attrs: AttributeSet): View(context, attrs) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val white = ResourcesCompat.getColor(resources, android.R.color.white, null)
     private val black = ResourcesCompat.getColor(resources, android.R.color.black, null)
+    private val gray = ResourcesCompat.getColor(resources, R.color.lightgray, null)
     var bitmap: Bitmap? = null
     private val rect = Rect()
     private val bitmapRect = Rect()
@@ -46,9 +47,10 @@ class RoundedMask(context: Context, attrs: AttributeSet): View(context, attrs) {
         bitmapRect.set(0, 0, bitmap?.width ?: 0, bitmap?.height ?: 0)
 
         if (bitmap == null) {
-            bitmap = BitmapFactory.decodeResource(resources, R.drawable.friends)
-            bitmap = Bitmap.createScaledBitmap(bitmap, measuredWidth, measuredHeight, false)
-            bitmapRect.set(0, 0, bitmap?.width ?: 0, bitmap?.height ?: 0)
+            paint.color = gray
+
+            canvas?.drawArc(0F, arcTop, bounds.width, bounds.height, 0F, 180F, true, paint)
+            canvas?.drawRect(0F, 0F, bounds.width, (bounds.height - (bounds.height - arcTop)/ 2) + .5F, paint)
 
         }
 

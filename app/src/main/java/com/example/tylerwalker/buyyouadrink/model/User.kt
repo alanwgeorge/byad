@@ -5,25 +5,33 @@ import android.os.Parcelable
 import java.io.Serializable
 
 data class User(
-        val user_id: Int,
-        val first_name: String,
-        val last_name: String,
-        val location: Coordinates,
-        val favorite_drink: String,
-        val caption: String = "",
-        val image_url: String? = null
+        var user_id: String,
+        var first_name: String = "",
+        var last_name: String = "",
+        var location: Coordinates = Coordinates(0F, 0F),
+        var favorite_drink: String = "",
+        var caption: String = "",
+        var image_url: String = "",
+        var display_name: String = "",
+        var email: String = "",
+        var phone: String = "",
+        var bio: String = ""
 ): Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             Coordinates(parcel.readFloat(), parcel.readFloat()),
             parcel.readString(),
             parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
             parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(user_id)
+        parcel.writeString(user_id)
         parcel.writeString(first_name)
         parcel.writeString(last_name)
         parcel.writeFloat(location.latitude)
@@ -31,6 +39,10 @@ data class User(
         parcel.writeString(favorite_drink)
         parcel.writeString(caption)
         parcel.writeString(image_url)
+        parcel.writeString(display_name)
+        parcel.writeString(email)
+        parcel.writeString(phone)
+        parcel.writeString(bio)
     }
 
     override fun describeContents(): Int {
@@ -53,7 +65,7 @@ data class Coordinates (
         val longitude: Float
 )
 
-sealed class Drink() {
+sealed class Drink {
     abstract val name: String
     abstract val type: String
 

@@ -1,5 +1,6 @@
 package com.example.tylerwalker.buyyouadrink.service
 
+import android.content.SharedPreferences
 import android.util.Log
 import com.example.tylerwalker.buyyouadrink.R.drawable.user
 import com.example.tylerwalker.buyyouadrink.model.AuthResponse
@@ -16,14 +17,14 @@ class AuthService {
     private val firebaseAuth = FirebaseAuth.getInstance()
 
     fun login(email: String, password: String): Single<AuthResponse> {
-        val user = User(0,"John", "Doe", Coordinates(37.7749F, -122.4194F), "Tea")
+        val user = User("0","John", "Doe", Coordinates(37.7749F, -122.4194F), "Tea")
         Log.d("user", "logging in...")
         return RxFirebaseAuth.signInWithEmailAndPassword(firebaseAuth, email, password)
                 .map {
                     Log.d("user", "email: ${it.user.email}")
                     Log.d("user", "meta: ${it.user.metadata}")
                     Log.d("user", "display: ${it.user.displayName}")
-                    AuthResponse(User(123, it.user.displayName.toString(), it.user.displayName.toString(), Coordinates(37.7749F, -122.4194F), "Coffee"), true)
+                    AuthResponse(User(it.user.uid, it.user.displayName.toString(), it.user.displayName.toString(), Coordinates(37.7749F, -122.4194F), "Coffee"), true)
                 }
                 .toSingle()
                 .onErrorReturn { AuthResponse(null, false) }
@@ -34,7 +35,7 @@ class AuthService {
         return RxFirebaseAuth.createUserWithEmailAndPassword(firebaseAuth, email, password)
                 .map {
                     Log.d("user", "result: ${it.user}")
-                    AuthResponse(User(123, it.user.displayName.toString(), it.user.displayName.toString(), Coordinates(37.7749F, -122.4194F), "Coffee"), true)
+                    AuthResponse(User(it.user.uid, it.user.displayName.toString(), it.user.displayName.toString(), Coordinates(37.7749F, -122.4194F), "Coffee"), true)
                 }
                 .toSingle()
                 .onErrorReturn {

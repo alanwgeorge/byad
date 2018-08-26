@@ -7,4 +7,6 @@
     <color name="altAccent">#FF3B00</color>
     <color name="colorPrimaryDark">#0000FF</color>
     <color name="colorAccent">#6E6EFF</color>
+    <color name="lightgray">#C1C1C1</color>
+    <color name="darkgray">#838383</color>
 </resources>

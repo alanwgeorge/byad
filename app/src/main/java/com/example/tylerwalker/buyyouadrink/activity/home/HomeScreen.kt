@@ -37,8 +37,8 @@ class HomeScreen : AppCompatActivity() {
     val image_url_2 = "https://res.cloudinary.com/wells-fargo/image/upload/v1531196082/selfie_400_400.jpg"
 
     val testUsers = arrayOf(
-            User(1,"Tyler", "Walker", Coordinates(37.8716F, -122.2727F), "Beer", "I like to drink coffee.", image_url = image_url),
-            User(2,"Kelsi", "Yuan", Coordinates(37.7749F, 122.4194F), "Tea","Let's have some cocktails tonight!", image_url = image_url_2))
+            User("1","Tyler", "Walker", Coordinates(37.8716F, -122.2727F), "Beer", "I like to drink coffee.", image_url = image_url),
+            User("2","Kelsi", "Yuan", Coordinates(37.7749F, 122.4194F), "Tea","Let's have some cocktails tonight!", image_url = image_url_2))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +46,7 @@ class HomeScreen : AppCompatActivity() {
 
         setContentView(R.layout.activity_home)
 
-        App().getComponent().inject(this)
+        App().getComponent(this).inject(this)
 
         setupPresenter()
         setupRecyclerView()
@@ -83,7 +83,7 @@ class HomeScreen : AppCompatActivity() {
         }
     }
 
-    fun transitionToProfile(user_id: Int) {
+    fun transitionToProfile(user_id: String) {
         val intent = Intent(this, ProfileActivity::class.java)
         intent.putExtra("user_id", user_id)
         startActivity(intent)

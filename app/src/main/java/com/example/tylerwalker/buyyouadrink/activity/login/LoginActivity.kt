@@ -11,9 +11,10 @@ import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Button
 import com.example.tylerwalker.buyyouadrink.R
+import com.example.tylerwalker.buyyouadrink.R.drawable.user
 import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
 import com.example.tylerwalker.buyyouadrink.activity.onboarding.OnBoarding
-import com.example.tylerwalker.buyyouadrink.model.AuthResponse
+import com.example.tylerwalker.buyyouadrink.model.*
 import com.example.tylerwalker.buyyouadrink.module.App
 import com.example.tylerwalker.buyyouadrink.service.AuthService
 import com.google.gson.Gson
@@ -23,7 +24,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 import kotlinx.android.synthetic.main.activity_new_login.*
-import kotlinx.android.synthetic.main.activity_new_login.view.*
 import javax.inject.Inject
 
 /**
@@ -34,16 +34,17 @@ class LoginActivity : AppCompatActivity() {
 
     @Inject lateinit var authService: AuthService
 
-    lateinit var sharedPreferences: SharedPreferences
+    @Inject lateinit var userRepository: UserRepository
+
+    @Inject lateinit var localStorage: LocalStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_login)
 
         // Dagger 2 component
-        App().getComponent().inject(this)
+        App().getComponent(this).inject(this)
 
-        sharedPreferences  = getSharedPreferences("com.example.tylerwalker.buyyouadrink", Context.MODE_PRIVATE)
 
         sign_in_button.setOnClickListener { attemptLogin() }
         sign_up_button.findViewById<Button>(R.id.primary_button)?.let { it.text = "REGISTER"; it.setOnClickListener { transitionToSignUp(it) } }
@@ -124,19 +125,50 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    inner class UserRepositoryObserver: SingleObserver<UserResponse> {
+        override fun onSubscribe(d: Disposable) {
+        }
+
+        override fun onError(e: Throwable) {
+            Log.d("NETWORK", e.message)
+        }
+
+        override fun onSuccess(t: UserResponse) {
+            if (t.status) {
+                Log.d("LoginActivity", "success: got user ${t.user}")
+                localStorage.setCurrentUser(t.user)
+                start()
+            } else {
+                Log.e("LoginActivity", "userRepository error: ${t.error}")
+            }
+        }
+    }
+
     private fun handleLoginResponse(response: AuthResponse) {
         if (!response.status) {
             clearForms()
             return
         }
 
+        response.user?.let {
+            Log.d("user", "getting user... user: ${it}")
+
+            userRepository.getUser(it.user_id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(UserRepositoryObserver())
+
+            localStorage.setCurrentUser(it)
+        }
+
+    }
+
+    fun start() {
         var intent: Intent
 
-        val json = Gson().toJson(response.user)
-        sharedPreferences.edit().putString(SHARED_PREFERENCES_CURRENT_USER_KEY, json).apply()
-
-        if (sharedPreferences.getBoolean("firstrun", true)) {
-            sharedPreferences.edit().putBoolean("firstrun", false).commit()
+//        if (sharedPreferences.getBoolean("firstrun", true)) {
+        if (true) {
+            localStorage.setFirstRun()
             intent = Intent(this, OnBoarding::class.java)
         } else {
             intent = Intent(this, HomeScreen::class.java)

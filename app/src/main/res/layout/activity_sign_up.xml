@@ -139,7 +139,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/login_background_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:onClick="@{viewmodel.register}"/>
+        android:onClick="@{viewmodel::register}"/>
 
 </android.support.constraint.ConstraintLayout>
 </layout>

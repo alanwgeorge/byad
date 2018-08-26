@@ -61,11 +61,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val builder = LatLngBounds.builder()
 
         if (targetUser == null) {
-            targetUser = User(0, "?", "?", Coordinates(37.8716F, -122.2727F), "Coffee")
+            targetUser = User("0", "?", "?", Coordinates(37.8716F, -122.2727F), "Coffee")
         }
 
         if (sourceUser == null) {
-            sourceUser = User(1, "??", "??", Coordinates(37.86F, -122.2755F), "Coffee")
+            sourceUser = User("1", "??", "??", Coordinates(37.86F, -122.2755F), "Coffee")
         }
 
         sourceUser?.let {

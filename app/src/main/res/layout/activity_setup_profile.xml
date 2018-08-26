@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileViewModel" />
+    </data>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity">
+
+    <com.example.tylerwalker.buyyouadrink.view.RoundedMask
+        android:id="@+id/profile_cover_image"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/profile_image_porthole"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:background="@drawable/circular_porthole_frame"
+        android:elevation="@dimen/project_image_elevation"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+        app:layout_constraintEnd_toEndOf="@+id/profile_image"
+        app:layout_constraintStart_toStartOf="@+id/profile_image"
+        app:layout_constraintTop_toTopOf="@+id/profile_image" />
+
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="95dp"
+
+            android:elevation="@dimen/project_image_elevation"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/profile_cover_image"
+            android:background="@drawable/rounded_gray"/>
+
+        <ImageView
+            android:id="@+id/profile_friends_button_frame"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:background="@drawable/circular_porthole_frame"
+            android:elevation="@dimen/project_image_elevation"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_friends_button"
+            app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
+            app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
+            app:layout_constraintTop_toTopOf="@+id/profile_friends_button" />
+
+
+        <ImageView
+            android:id="@+id/profile_friends_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="8dp"
+
+            android:background="@drawable/rounded_gray"
+            android:elevation="@dimen/project_image_elevation"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+            app:layout_constraintEnd_toStartOf="@+id/profile_image"
+            app:layout_constraintTop_toTopOf="@+id/profile_image" />
+
+        <TextView
+            android:id="@+id/friend_count_text"
+            android:layout_width="30dp"
+            android:layout_height="14dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:elevation="@dimen/project_image_elevation"
+
+            android:fontFamily="@font/arimo_bold"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
+            app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
+            app:layout_constraintTop_toTopOf="@+id/profile_friends_button" />
+
+        <TextView
+            android:id="@+id/profile_friend_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/arimo_bold"
+            android:text="Friends"
+            android:textAlignment="center"
+            android:elevation="@dimen/project_image_elevation"
+
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
+            app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
+            app:layout_constraintTop_toBottomOf="@+id/friend_count_text" />
+
+        <ImageView
+            android:id="@+id/profile_groups_button_frame"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:background="@drawable/circular_porthole_frame"
+            android:elevation="@dimen/project_image_elevation"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_groups_button"
+            app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
+            app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
+            app:layout_constraintTop_toTopOf="@+id/profile_groups_button" />
+
+
+        <ImageView
+            android:id="@+id/profile_groups_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_gray"
+
+            android:elevation="@dimen/project_image_elevation"
+
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+            app:layout_constraintStart_toEndOf="@+id/profile_image"
+            app:layout_constraintTop_toTopOf="@+id/profile_image" />
+        <TextView
+            android:id="@+id/group_count_text"
+            android:layout_width="30dp"
+            android:layout_height="14dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/arimo_bold"
+            android:elevation="@dimen/project_image_elevation"
+
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
+            app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
+            app:layout_constraintTop_toTopOf="@+id/profile_groups_button" />
+
+        <TextView
+            android:id="@+id/profile_group_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/arimo_bold"
+            android:text="Groups"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:elevation="@dimen/project_image_elevation"
+
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
+            app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
+            app:layout_constraintTop_toBottomOf="@+id/group_count_text" />
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/profile_user_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerHorizontal="true"
+
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:elevation="@dimen/project_image_elevation"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thicknessRatio="1.9"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/profile_conversation_button"
+            app:layout_constraintTop_toTopOf="@+id/profile_conversation_button">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+
+
+                android:layout_marginTop="5dp"
+                android:src="@drawable/user"
+
+                app:layout_constraintEnd_toStartOf="@+id/profile_user_button"
+                app:layout_constraintStart_toStartOf="@+id/profile_user_button"
+                app:layout_constraintTop_toTopOf="@+id/profile_user_button"></ImageView>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/profile_conversation_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerHorizontal="true"
+
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:elevation="@dimen/project_image_elevation"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thicknessRatio="1.9"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/profile_image"
+            app:layout_constraintEnd_toEndOf="@+id/profile_image"
+            app:layout_constraintStart_toStartOf="@+id/profile_image">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+
+
+                android:layout_marginTop="5dp"
+                android:src="@drawable/conversation"
+
+                app:layout_constraintEnd_toStartOf="@+id/profile_conversation_button"
+                app:layout_constraintStart_toStartOf="@+id/profile_conversation_button"
+                app:layout_constraintTop_toTopOf="@+id/profile_conversation_button"></ImageView>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/profile_eye_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerHorizontal="true"
+
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:elevation="@dimen/project_image_elevation"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thicknessRatio="1.9"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintStart_toEndOf="@+id/profile_conversation_button"
+            app:layout_constraintTop_toTopOf="@+id/profile_conversation_button">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="10dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+
+
+                android:layout_marginTop="7.5dp"
+                android:layout_marginLeft="2.5dp"
+                android:background="@drawable/eye"
+
+                app:layout_constraintEnd_toStartOf="@+id/profile_eye_button"
+                app:layout_constraintStart_toStartOf="@+id/profile_eye_button"
+                app:layout_constraintTop_toTopOf="@+id/profile_eye_button"></ImageView>
+        </android.support.v7.widget.CardView>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/arimo_bold"
+        android:text="My Profile"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profile_cover_image" />
+
+    <Button
+        android:id="@+id/add_cover_image_button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_gradient"
+        android:contentDescription="add cover image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/add_profile_image_button"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="75dp"
+        android:layout_marginTop="75dp"
+        android:background="@drawable/rounded_gradient"
+        android:contentDescription="add profile photo"
+
+        android:elevation="100dp"
+        app:layout_constraintStart_toStartOf="@+id/profile_image"
+        app:layout_constraintTop_toTopOf="@+id/profile_image" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/name_text_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_gray_corners"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image_porthole">
+
+        <ImageView
+            android:id="@+id/name_text_image"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/rounded_gray" />
+
+        <EditText
+            android:id="@+id/name_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Name"
+            android:text="@={viewmodel.name}"
+            app:layout_constraintTop_toTopOf="@+id/name_text_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/name_text_image"
+            tools:layout_editor_absoluteY="0dp" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/location_text_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_gray_corners"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name_text_layout">
+
+        <fragment
+            android:id="@+id/location_text"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:hint="Location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/email_text_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_gray_corners"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/location_text_layout">
+
+        <ImageView
+            android:id="@+id/email_text_image"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/rounded_gray" />
+
+        <EditText
+            android:id="@+id/email_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:hint="Email"
+            android:text="@={viewmodel.email}"
+            app:layout_constraintTop_toTopOf="@+id/email_text_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/email_text_image"
+            tools:layout_editor_absoluteY="0dp" />
+    </android.support.constraint.ConstraintLayout>
+
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/phone_text_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_gray_corners"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email_text_layout">
+
+        <ImageView
+            android:id="@+id/phone_text_image"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/rounded_gray" />
+
+        <EditText
+            android:id="@+id/phone_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Phone"
+            android:text="@={viewmodel.phone}"
+            app:layout_constraintTop_toTopOf="@+id/phone_text_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/phone_text_image"
+            tools:layout_editor_absoluteY="0dp" />
+    </android.support.constraint.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/bio_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_gray_corners"
+        android:ems="10"
+        android:text="@={viewmodel.bio}"
+        android:hint="Bio"
+        android:inputType="textMultiLine"
+        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phone_text_layout" />
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_primary"
+        android:fontFamily="@font/arimo_bold"
+        android:onClick="@{viewmodel::save}"
+        android:text="SAVE"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bio_text" />
+
+
+</android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+</layout>

@@ -15,7 +15,6 @@ import javax.inject.Inject
 
 class SignUpActivity : AppCompatActivity() {
 
-
     @Inject
     lateinit var authService: AuthService
 
@@ -23,7 +22,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Dagger 2 component
-        App().getComponent().inject(this)
+        App().getComponent(this).inject(this)
 
         val binding: ActivitySignUpBinding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up)
         binding.setLifecycleOwner(this)
