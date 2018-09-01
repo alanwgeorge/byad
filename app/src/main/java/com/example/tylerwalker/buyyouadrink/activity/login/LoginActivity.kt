@@ -117,10 +117,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         override fun onError(e: Throwable) {
-            Log.d("NETWORK", e.message)
+            Log.d("LoginActivity", "onError: ${e.message}")
         }
 
         override fun onSuccess(t: AuthResponse) {
+            Log.d("LoginActivity", "auth onSuccess: $t")
             handleLoginResponse(t)
         }
     }
@@ -134,12 +135,10 @@ class LoginActivity : AppCompatActivity() {
         }
 
         override fun onSuccess(t: UserResponse) {
+            Log.d("LoginActivity", "user onSuccess: $t")
             if (t.status) {
-                Log.d("LoginActivity", "success: got user ${t.user}")
                 localStorage.setCurrentUser(t.user)
                 start()
-            } else {
-                Log.e("LoginActivity", "userRepository error: ${t.error}")
             }
         }
     }
@@ -151,14 +150,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         response.user?.let {
-            Log.d("user", "getting user... user: ${it}")
 
-            userRepository.getUser(it.user_id)
+            userRepository.getUser(it)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(UserRepositoryObserver())
-
-            localStorage.setCurrentUser(it)
         }
 
     }
@@ -166,8 +162,7 @@ class LoginActivity : AppCompatActivity() {
     fun start() {
         var intent: Intent
 
-//        if (sharedPreferences.getBoolean("firstrun", true)) {
-        if (true) {
+        if (localStorage.isFirstRun()) {
             localStorage.setFirstRun()
             intent = Intent(this, OnBoarding::class.java)
         } else {

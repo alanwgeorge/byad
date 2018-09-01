@@ -15,13 +15,17 @@ data class User(
         var display_name: String = "",
         var email: String = "",
         var phone: String = "",
-        var bio: String = ""
+        var bio: String = "",
+        var profile_image: String = "",
+        var cover_image: String = ""
 ): Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             Coordinates(parcel.readFloat(), parcel.readFloat()),
+            parcel.readString(),
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -43,6 +47,8 @@ data class User(
         parcel.writeString(email)
         parcel.writeString(phone)
         parcel.writeString(bio)
+        parcel.writeString(profile_image)
+        parcel.writeString(cover_image)
     }
 
     override fun describeContents(): Int {

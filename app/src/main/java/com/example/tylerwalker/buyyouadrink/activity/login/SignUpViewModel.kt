@@ -10,9 +10,11 @@ import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
 import android.util.Patterns
 import android.view.View
+import android.widget.Toast
 import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
 import com.example.tylerwalker.buyyouadrink.activity.onboarding.OnBoarding
 import com.example.tylerwalker.buyyouadrink.model.AuthResponse
+import com.example.tylerwalker.buyyouadrink.model.LocalStorage
 import com.example.tylerwalker.buyyouadrink.service.AuthService
 import com.google.android.gms.flags.impl.SharedPreferencesFactory.getSharedPreferences
 import com.google.gson.Gson
@@ -24,11 +26,13 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 class SignUpViewModel(app: Application): AndroidViewModel(app), LifecycleObserver {
-    val SHARED_PREFERENCES_CURRENT_USER_KEY = "current_user"
-
-    lateinit var authService: AuthService
-    lateinit var sharedPreferences: SharedPreferences
     lateinit var activity: SignUpActivity
+
+    @Inject
+    lateinit var authService: AuthService
+
+    @Inject
+    lateinit var localStorage: LocalStorage
 
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
@@ -70,7 +74,7 @@ class SignUpViewModel(app: Application): AndroidViewModel(app), LifecycleObserve
         }
 
         override fun onError(e: Throwable) {
-            Log.d("NETWORK", e.message)
+            Log.d("SignUpViewModel", e.message)
         }
 
         override fun onSuccess(t: AuthResponse) {
@@ -81,15 +85,19 @@ class SignUpViewModel(app: Application): AndroidViewModel(app), LifecycleObserve
     private fun handleResponse(response: AuthResponse) {
         Log.d("user", "response: ${response}")
         if (!response.status) {
+            if (response.error == "email in use") {
+                Toast.makeText(activity, "That email is already associated with one of our users.", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(activity, "Something went wrong...", Toast.LENGTH_LONG).show()
+            }
             return
         }
 
         var intent: Intent?
-        val json = Gson().toJson(response.user)
-        sharedPreferences.edit().putString(SHARED_PREFERENCES_CURRENT_USER_KEY, json).apply()
+        localStorage.setCurrentUser(response.user)
 
-        if (sharedPreferences.getBoolean("firstrun", true)) {
-            sharedPreferences.edit().putBoolean("firstrun", false).commit()
+        if (localStorage.isFirstRun()) {
+            localStorage.setFirstRun()
             intent = Intent(activity, OnBoarding::class.java)
         } else {
             intent = Intent(activity, HomeScreen::class.java)

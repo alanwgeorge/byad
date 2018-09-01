@@ -34,14 +34,14 @@ class RoundedMask(context: Context, attrs: AttributeSet): View(context, attrs) {
         Log.d("onDraw() bounds", "${bounds.width}, ${bounds.height}")
         Log.d("onDraw() arcTop", "${arcTop}")
 
-        canvas?.drawColor(white)
+//        canvas?.drawColor(white)
 
         paint.color = black
 
-        canvas?.drawArc(0F, arcTop, bounds.width, bounds.height, 0F, 180F, true, paint)
-        canvas?.drawRect(0F, 0F, bounds.width, (bounds.height - (bounds.height - arcTop)/ 2) + .5F, paint)
-
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.ADD)
+//        canvas?.drawArc(0F, arcTop, bounds.width, bounds.height, 0F, 180F, true, paint)
+//        canvas?.drawRect(0F, 0F, bounds.width, (bounds.height - (bounds.height - arcTop)/ 2) + .5F, paint)
+//
+//        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.ADD)
 
         rect.set(0, 0, bounds.width.toInt(), bounds.height.toInt())
         bitmapRect.set(0, 0, bitmap?.width ?: 0, bitmap?.height ?: 0)
@@ -55,11 +55,13 @@ class RoundedMask(context: Context, attrs: AttributeSet): View(context, attrs) {
         }
 
         bitmap?.let {
+            Log.d("RoundedMask", "drawing bitmap: $bitmap")
             canvas?.drawBitmap(bitmap, rect, rect, paint)
+            return
         }
     }
 
-    fun updateBitmap(_bitmap: Bitmap) {
+    fun updateBitmap(_bitmap: Bitmap?) {
         this.bitmap = _bitmap
         invalidate()
     }

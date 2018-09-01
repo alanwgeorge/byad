@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
+        <import type="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity.ProfileImage" />
         <variable
             name="viewmodel"
             type="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileViewModel" />
@@ -296,7 +297,8 @@
         android:background="@drawable/rounded_gradient"
         android:contentDescription="add cover image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="@{view -> viewmodel.activity.chooseCoverImage()}"/>
 
     <ImageView
         android:id="@+id/add_profile_image_button"
@@ -309,7 +311,8 @@
 
         android:elevation="100dp"
         app:layout_constraintStart_toStartOf="@+id/profile_image"
-        app:layout_constraintTop_toTopOf="@+id/profile_image" />
+        app:layout_constraintTop_toTopOf="@+id/profile_image"
+        android:onClick="@{view -> viewmodel.activity.chooseProfileImage()}"/>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/name_text_layout"

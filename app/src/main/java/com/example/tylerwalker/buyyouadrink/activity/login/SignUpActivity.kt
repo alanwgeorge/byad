@@ -22,14 +22,14 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Dagger 2 component
-        App().getComponent(this).inject(this)
+        val component = App().getComponent(this)
+        component.inject(this)
 
         val binding: ActivitySignUpBinding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up)
         binding.setLifecycleOwner(this)
 
         ViewModelProviders.of(this).get(SignUpViewModel::class.java).apply {
-            authService = this@SignUpActivity.authService
-            sharedPreferences  = getSharedPreferences("com.example.tylerwalker.buyyouadrink", Context.MODE_PRIVATE)
+            component.inject(this)
             activity = this@SignUpActivity
             binding.viewmodel = this
 

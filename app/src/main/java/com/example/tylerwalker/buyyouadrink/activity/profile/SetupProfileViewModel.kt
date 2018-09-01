@@ -2,11 +2,17 @@ package com.example.tylerwalker.buyyouadrink.activity.profile
 
 import android.app.Application
 import android.arch.lifecycle.*
+import android.content.Intent
 import android.content.SharedPreferences
+import android.support.v4.app.ActivityCompat.startActivityForResult
+import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import com.example.tylerwalker.buyyouadrink.R.drawable.user
+import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
+import com.example.tylerwalker.buyyouadrink.activity.login.SignUpActivity
 import com.example.tylerwalker.buyyouadrink.model.*
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.places.Place
@@ -25,6 +31,8 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
     val email = MutableLiveData<String>()
     val phone = MutableLiveData<String>()
     val bio = MutableLiveData<String>()
+    val coverImage = MutableLiveData<String>()
+    val profileImage = MutableLiveData<String>()
 
     lateinit var activity: SetupProfileActivity
 
@@ -42,6 +50,8 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
         Log.d("SetupProfileViewModel", "email: ${email.value}")
         Log.d("SetupProfileViewModel", "phone: ${phone.value}")
         Log.d("SetupProfileViewModel", "bio: ${bio.value}")
+        Log.d("SetupProfileViewModel", "profile_image: ${profileImage.value}")
+        Log.d("SetupProfileViewModel", "cover image: ${coverImage.value}")
 
         val user = localStorage.getCurrentUser() ?: return
 
@@ -97,6 +107,9 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
             }
         }
 
+        profileImage.value?.let { user.profile_image = it }
+        coverImage.value?.let { user.cover_image = it }
+
         if (hasShownError) {
             hasShownError = false
         } else {
@@ -118,9 +131,13 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
         }
 
         override fun onSuccess(t: UserResponse) {
+            Log.d("SetupProfileViewModel", "userResponse: $t")
             if (t.status) {
                 Toast.makeText(activity, "Profile Updated.", Toast.LENGTH_LONG).show()
+                activity.transitionToHome()
+
             } else {
+                Log.d("SetupProfileViewModel", "${t.error}")
                 Toast.makeText(activity, "Oops, Something went wrong...", Toast.LENGTH_LONG).show()
             }
         }
@@ -137,6 +154,7 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
             Log.e("SetupProfileViewModel", "error: ${p0?.status}")
         }
     }
+
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun newTrash() {

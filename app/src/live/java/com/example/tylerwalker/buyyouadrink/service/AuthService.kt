@@ -6,6 +6,7 @@ import com.example.tylerwalker.buyyouadrink.R.drawable.user
 import com.example.tylerwalker.buyyouadrink.model.AuthResponse
 import com.example.tylerwalker.buyyouadrink.model.Coordinates
 import com.example.tylerwalker.buyyouadrink.model.User
+import com.example.tylerwalker.buyyouadrink.model.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import durdinapps.rxfirebase2.RxFirebaseAuth
 import io.reactivex.Single
@@ -24,7 +25,7 @@ class AuthService {
                     Log.d("user", "email: ${it.user.email}")
                     Log.d("user", "meta: ${it.user.metadata}")
                     Log.d("user", "display: ${it.user.displayName}")
-                    AuthResponse(User(it.user.uid, it.user.displayName.toString(), it.user.displayName.toString(), Coordinates(37.7749F, -122.4194F), "Coffee"), true)
+                    AuthResponse(User(it.user.uid, it.user.displayName.toString(), it.user.displayName.toString(), Coordinates(37.7749F, -122.4194F), "Coffee", email = email), true)
                 }
                 .toSingle()
                 .onErrorReturn { AuthResponse(null, false) }
@@ -40,7 +41,11 @@ class AuthService {
                 .toSingle()
                 .onErrorReturn {
                     Log.d("user", "error ${it.message}")
-                    AuthResponse(null, false)
+                    if (it.message == "The email address is already in use by another account.") {
+                        AuthResponse(null, false, "email in use")
+                    } else {
+                        AuthResponse(null, false, "unknown error")
+                    }
                 }
     }
 }
