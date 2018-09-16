@@ -1,7 +1,5 @@
 package com.example.tylerwalker.buyyouadrink.activity.home
 
-import android.location.Location
-import android.util.Log
 import com.example.tylerwalker.buyyouadrink.service.LocationService
 
 class HomePresenter {

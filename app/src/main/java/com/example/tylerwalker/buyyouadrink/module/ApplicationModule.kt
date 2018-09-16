@@ -1,6 +1,5 @@
 package com.example.tylerwalker.buyyouadrink.module
 
-import android.app.Application
 import android.content.Context
 import com.example.tylerwalker.buyyouadrink.model.LocalStorage
 import com.example.tylerwalker.buyyouadrink.model.UserRepository

@@ -112,6 +112,48 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun handleLoginResponse(response: AuthResponse) {
+        if (!response.status) {
+            clearForms()
+            return
+        }
+
+        response.user?.let {
+
+            userRepository.getUser(it)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(UserRepositoryObserver())
+        }
+
+    }
+
+    fun start() {
+        var intent: Intent
+
+        intent = if (localStorage.isFirstRun()) {
+            localStorage.setFirstRun()
+            Intent(this, OnBoarding::class.java)
+        } else {
+            Intent(this, HomeScreen::class.java)
+        }
+
+        intent = Intent(this, OnBoarding::class.java)
+
+        startActivity(intent)
+    }
+
+    private fun transitionToSignUp(view: View) {
+        val intent = Intent(this, SignUpActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun clearForms() {
+        password_text.setText("")
+        username_text.setText("")
+    }
+
     inner class LoginObserver: SingleObserver<AuthResponse> {
         override fun onSubscribe(d: Disposable) {
         }
@@ -141,44 +183,6 @@ class LoginActivity : AppCompatActivity() {
                 start()
             }
         }
-    }
-
-    private fun handleLoginResponse(response: AuthResponse) {
-        if (!response.status) {
-            clearForms()
-            return
-        }
-
-        response.user?.let {
-
-            userRepository.getUser(it)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(UserRepositoryObserver())
-        }
-
-    }
-
-    fun start() {
-        var intent: Intent
-
-        if (localStorage.isFirstRun()) {
-            localStorage.setFirstRun()
-            intent = Intent(this, OnBoarding::class.java)
-        } else {
-            intent = Intent(this, HomeScreen::class.java)
-        }
-        startActivity(intent)
-    }
-
-    fun transitionToSignUp(view: View) {
-        val intent = Intent(this, SignUpActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun clearForms() {
-        password_text.setText("")
-        username_text.setText("")
     }
 
 }

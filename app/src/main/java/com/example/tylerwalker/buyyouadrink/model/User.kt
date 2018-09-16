@@ -16,6 +16,9 @@ data class User(
         var email: String = "",
         var phone: String = "",
         var bio: String = "",
+        var likes: String = "",
+        var loves: String = "",
+        var drinks: String = "",
         var profile_image: String = "",
         var cover_image: String = ""
 ): Parcelable {
@@ -24,6 +27,9 @@ data class User(
             parcel.readString(),
             parcel.readString(),
             Coordinates(parcel.readFloat(), parcel.readFloat()),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -47,6 +53,9 @@ data class User(
         parcel.writeString(email)
         parcel.writeString(phone)
         parcel.writeString(bio)
+        parcel.writeString(likes)
+        parcel.writeString(loves)
+        parcel.writeString(drinks)
         parcel.writeString(profile_image)
         parcel.writeString(cover_image)
     }

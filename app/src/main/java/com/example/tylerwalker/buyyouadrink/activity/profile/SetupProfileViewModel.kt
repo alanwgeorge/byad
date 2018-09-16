@@ -2,22 +2,20 @@ package com.example.tylerwalker.buyyouadrink.activity.profile
 
 import android.app.Application
 import android.arch.lifecycle.*
-import android.content.Intent
-import android.content.SharedPreferences
-import android.support.v4.app.ActivityCompat.startActivityForResult
-import android.support.v4.content.ContextCompat.startActivity
+import android.graphics.PorterDuff
+import android.media.Image
+import android.support.constraint.ConstraintLayout
 import android.util.Log
 import android.util.Patterns
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
-import com.example.tylerwalker.buyyouadrink.R.drawable.user
-import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
-import com.example.tylerwalker.buyyouadrink.activity.login.SignUpActivity
+import com.example.tylerwalker.buyyouadrink.R
 import com.example.tylerwalker.buyyouadrink.model.*
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlaceSelectionListener
-import com.google.gson.Gson
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -31,8 +29,12 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
     val email = MutableLiveData<String>()
     val phone = MutableLiveData<String>()
     val bio = MutableLiveData<String>()
+    val likes = MutableLiveData<String>()
+    val loves = MutableLiveData<String>()
     val coverImage = MutableLiveData<String>()
     val profileImage = MutableLiveData<String>()
+
+    val drinkSelections = MutableLiveData<MutableList<Drink>>()
 
     lateinit var activity: SetupProfileActivity
 
@@ -50,6 +52,8 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
         Log.d("SetupProfileViewModel", "email: ${email.value}")
         Log.d("SetupProfileViewModel", "phone: ${phone.value}")
         Log.d("SetupProfileViewModel", "bio: ${bio.value}")
+        Log.d("SetupProfileViewModel", "likes: ${likes.value}")
+        Log.d("SetupProfileViewModel", "loves: ${bio.value}")
         Log.d("SetupProfileViewModel", "profile_image: ${profileImage.value}")
         Log.d("SetupProfileViewModel", "cover image: ${coverImage.value}")
 
@@ -107,8 +111,17 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
             }
         }
 
+        likes.value?.let { user.likes = it }
+        loves.value?.let { user.loves = it }
+
         profileImage.value?.let { user.profile_image = it }
         coverImage.value?.let { user.cover_image = it }
+
+        drinkSelections.value?.map {
+            it.name
+        }?.let {
+            user.drinks = it.joinToString(",")
+        }
 
         if (hasShownError) {
             hasShownError = false
@@ -120,6 +133,75 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
                     .subscribe(UserRepositoryObserver())
         }
     }
+
+    fun setColorFilter(view: View, drinkName: String) {
+        val drink = getDrink(drinkName)
+        view as ConstraintLayout
+
+        val darkColor = activity.resources.getColor(android.R.color.holo_blue_dark, null)
+
+        if (!isDrinkSelected(drink)) {
+            addDrinkToSelections(drink)
+
+            view.getChildAt(0).let {
+                it as ImageView
+                it.setColorFilter(darkColor, PorterDuff.Mode.SRC_IN)
+            }
+
+            view.getChildAt(1).let {
+                it as TextView
+                it.setTextColor(darkColor)
+            }
+
+            view.getChildAt(2).let {
+                it as ImageView
+                it.setColorFilter(darkColor, PorterDuff.Mode.SRC_IN)
+            }
+        } else {
+            removeDrinkFromSelections(drink)
+
+            view.getChildAt(0).let {
+                it as ImageView
+                it.clearColorFilter()
+            }
+
+            view.getChildAt(1).let {
+                it as TextView
+                it.setTextColor(activity.resources.getColor(android.R.color.black, null))
+            }
+
+            view.getChildAt(2).let {
+                it as ImageView
+                it.clearColorFilter()
+            }
+        }
+    }
+
+    private fun getDrink(drinkName: String): Drink {
+        return when(drinkName) {
+            "Coffee" -> Drink.Coffee
+            "BubbleTea" -> Drink.BubbleTea
+            "Beer" -> Drink.Beer
+            "Juice" -> Drink.Juice
+            else -> Drink.Coffee
+        }
+    }
+
+    private fun addDrinkToSelections(drink: Drink) =
+        drinkSelections.value?.run {
+            if (!contains(drink)) {
+                add(drink)
+            }
+        }
+
+    private fun removeDrinkFromSelections(drink: Drink) =
+            drinkSelections.value?.run {
+                if (contains(drink)) {
+                    remove(drink)
+                }
+            }
+
+    fun isDrinkSelected(drink: Drink) = drinkSelections.value?.contains(drink) ?: false
 
     inner class UserRepositoryObserver: SingleObserver<UserResponse> {
         override fun onSubscribe(d: Disposable) {

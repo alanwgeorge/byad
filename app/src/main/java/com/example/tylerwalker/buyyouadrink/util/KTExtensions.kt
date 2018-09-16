@@ -3,24 +3,21 @@ package com.example.tylerwalker.buyyouadrink.util
 import android.content.res.Resources
 import android.graphics.Bitmap
 import java.io.ByteArrayOutputStream
-import java.util.*
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.widget.ImageView
+import android.util.Base64
+import android.util.Log
 
 
-fun Bitmap.toEncodedString(): String? {
-     return try {
-         val baos = ByteArrayOutputStream()
-         this.compress(Bitmap.CompressFormat.WEBP, 1, baos)
-         val b = baos.toByteArray()
-         Base64.getEncoder().encodeToString(b)
-     } catch (e: NullPointerException) {
-         null
-     } catch (e: OutOfMemoryError) {
-         null
-     }
+fun Bitmap.toEncodedString(): String? = try {
+    val baos = ByteArrayOutputStream()
+    this.compress(Bitmap.CompressFormat.WEBP, 1, baos)
+    val b = baos.toByteArray()
+    Base64.encodeToString(b, Base64.DEFAULT)
+} catch (e: Exception) {
+    Log.d("KTExtensions", "$e")
+    null
 }
 
 fun Bitmap.toRoundedDrawable(resources: Resources): Drawable {
@@ -29,14 +26,11 @@ fun Bitmap.toRoundedDrawable(resources: Resources): Drawable {
     return roundDrawable
 }
 
-fun String.toBitmap(): Bitmap? {
-    return try {
-        val encodeByte = Base64.getDecoder().decode(this)
-        return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
-    } catch (e: NullPointerException) {
-        e.message
-        return null
-    } catch (e: OutOfMemoryError) {
-        return null
+
+fun String.toBitmap(): Bitmap? = try {
+        val encoded = Base64.decode(this, Base64.DEFAULT)
+        BitmapFactory.decodeByteArray(encoded, 0, encoded.size)
+    } catch (e: Exception) {
+        Log.d("KTExtensions", "$e")
+        null
     }
-}

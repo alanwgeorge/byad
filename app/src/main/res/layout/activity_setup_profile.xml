@@ -2,498 +2,829 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <import type="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity.ProfileImage" />
+        <import type="com.example.tylerwalker.buyyouadrink.model.Drink" />
+
         <variable
             name="viewmodel"
             type="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileViewModel" />
     </data>
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-<android.support.constraint.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity">
 
-    <com.example.tylerwalker.buyyouadrink.view.RoundedMask
-        android:id="@+id/profile_cover_image"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/profile_image_porthole"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:background="@drawable/circular_porthole_frame"
-        android:elevation="@dimen/project_image_elevation"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
-        app:layout_constraintEnd_toEndOf="@+id/profile_image"
-        app:layout_constraintStart_toStartOf="@+id/profile_image"
-        app:layout_constraintTop_toTopOf="@+id/profile_image" />
-
-
-        <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="95dp"
-
-            android:elevation="@dimen/project_image_elevation"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/profile_cover_image"
-            android:background="@drawable/rounded_gray"/>
-
-        <ImageView
-            android:id="@+id/profile_friends_button_frame"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:background="@drawable/circular_porthole_frame"
-            android:elevation="@dimen/project_image_elevation"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_friends_button"
-            app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
-            app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
-            app:layout_constraintTop_toTopOf="@+id/profile_friends_button" />
-
-
-        <ImageView
-            android:id="@+id/profile_friends_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="8dp"
-
-            android:background="@drawable/rounded_gray"
-            android:elevation="@dimen/project_image_elevation"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_image"
-            app:layout_constraintEnd_toStartOf="@+id/profile_image"
-            app:layout_constraintTop_toTopOf="@+id/profile_image" />
-
-        <TextView
-            android:id="@+id/friend_count_text"
-            android:layout_width="30dp"
-            android:layout_height="14dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:elevation="@dimen/project_image_elevation"
-
-            android:fontFamily="@font/arimo_bold"
-            android:text="0"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
-            app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
-            app:layout_constraintTop_toTopOf="@+id/profile_friends_button" />
-
-        <TextView
-            android:id="@+id/profile_friend_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/arimo_bold"
-            android:text="Friends"
-            android:textAlignment="center"
-            android:elevation="@dimen/project_image_elevation"
-
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
-            app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
-            app:layout_constraintTop_toBottomOf="@+id/friend_count_text" />
-
-        <ImageView
-            android:id="@+id/profile_groups_button_frame"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:background="@drawable/circular_porthole_frame"
-            android:elevation="@dimen/project_image_elevation"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_groups_button"
-            app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
-            app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
-            app:layout_constraintTop_toTopOf="@+id/profile_groups_button" />
-
-
-        <ImageView
-            android:id="@+id/profile_groups_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_gray"
-
-            android:elevation="@dimen/project_image_elevation"
-
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_image"
-            app:layout_constraintStart_toEndOf="@+id/profile_image"
-            app:layout_constraintTop_toTopOf="@+id/profile_image" />
-        <TextView
-            android:id="@+id/group_count_text"
-            android:layout_width="30dp"
-            android:layout_height="14dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/arimo_bold"
-            android:elevation="@dimen/project_image_elevation"
-
-            android:text="0"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
-            app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
-            app:layout_constraintTop_toTopOf="@+id/profile_groups_button" />
-
-        <TextView
-            android:id="@+id/profile_group_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/arimo_bold"
-            android:text="Groups"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:elevation="@dimen/project_image_elevation"
-
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
-            app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
-            app:layout_constraintTop_toBottomOf="@+id/group_count_text" />
-
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/profile_user_button"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerHorizontal="true"
-
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            android:elevation="@dimen/project_image_elevation"
-            android:innerRadius="0dp"
-            android:shape="ring"
-            android:thicknessRatio="1.9"
-            app:cardCornerRadius="15dp"
-            app:layout_constraintEnd_toStartOf="@+id/profile_conversation_button"
-            app:layout_constraintTop_toTopOf="@+id/profile_conversation_button">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="15dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-
-
-                android:layout_marginTop="5dp"
-                android:src="@drawable/user"
-
-                app:layout_constraintEnd_toStartOf="@+id/profile_user_button"
-                app:layout_constraintStart_toStartOf="@+id/profile_user_button"
-                app:layout_constraintTop_toTopOf="@+id/profile_user_button"></ImageView>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/profile_conversation_button"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerHorizontal="true"
-
-            android:layout_marginBottom="24dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:elevation="@dimen/project_image_elevation"
-            android:innerRadius="0dp"
-            android:shape="ring"
-            android:thicknessRatio="1.9"
-            app:cardCornerRadius="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/profile_image"
-            app:layout_constraintEnd_toEndOf="@+id/profile_image"
-            app:layout_constraintStart_toStartOf="@+id/profile_image">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="15dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-
-
-                android:layout_marginTop="5dp"
-                android:src="@drawable/conversation"
-
-                app:layout_constraintEnd_toStartOf="@+id/profile_conversation_button"
-                app:layout_constraintStart_toStartOf="@+id/profile_conversation_button"
-                app:layout_constraintTop_toTopOf="@+id/profile_conversation_button"></ImageView>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/profile_eye_button"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerHorizontal="true"
-
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:elevation="@dimen/project_image_elevation"
-            android:innerRadius="0dp"
-            android:shape="ring"
-            android:thicknessRatio="1.9"
-            app:cardCornerRadius="15dp"
-            app:layout_constraintStart_toEndOf="@+id/profile_conversation_button"
-            app:layout_constraintTop_toTopOf="@+id/profile_conversation_button">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="10dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-
-
-                android:layout_marginTop="7.5dp"
-                android:layout_marginLeft="2.5dp"
-                android:background="@drawable/eye"
-
-                app:layout_constraintEnd_toStartOf="@+id/profile_eye_button"
-                app:layout_constraintStart_toStartOf="@+id/profile_eye_button"
-                app:layout_constraintTop_toTopOf="@+id/profile_eye_button"></ImageView>
-        </android.support.v7.widget.CardView>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/arimo_bold"
-        android:text="My Profile"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/profile_cover_image" />
-
-    <Button
-        android:id="@+id/add_cover_image_button"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_gradient"
-        android:contentDescription="add cover image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="@{view -> viewmodel.activity.chooseCoverImage()}"/>
-
-    <ImageView
-        android:id="@+id/add_profile_image_button"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="75dp"
-        android:layout_marginTop="75dp"
-        android:background="@drawable/rounded_gradient"
-        android:contentDescription="add profile photo"
-
-        android:elevation="100dp"
-        app:layout_constraintStart_toStartOf="@+id/profile_image"
-        app:layout_constraintTop_toTopOf="@+id/profile_image"
-        android:onClick="@{view -> viewmodel.activity.chooseProfileImage()}"/>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/name_text_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/rounded_gray_corners"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image_porthole">
-
-        <ImageView
-            android:id="@+id/name_text_image"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/rounded_gray" />
-
-        <EditText
-            android:id="@+id/name_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Name"
-            android:text="@={viewmodel.name}"
-            app:layout_constraintTop_toTopOf="@+id/name_text_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/name_text_image"
-            tools:layout_editor_absoluteY="0dp" />
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/location_text_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/rounded_gray_corners"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_text_layout">
-
-        <fragment
-            android:id="@+id/location_text"
-            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:hint="Location"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
-            />
-    </android.support.constraint.ConstraintLayout>
+            android:layout_height="match_parent"
+            tools:context="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/email_text_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/rounded_gray_corners"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/location_text_layout">
+            <com.example.tylerwalker.buyyouadrink.view.RoundedMask
+                android:id="@+id/profile_cover_image"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
 
-        <ImageView
-            android:id="@+id/email_text_image"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/rounded_gray" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/email_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:ems="10"
-            android:hint="Email"
-            android:text="@={viewmodel.email}"
-            app:layout_constraintTop_toTopOf="@+id/email_text_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/email_text_image"
-            tools:layout_editor_absoluteY="0dp" />
-    </android.support.constraint.ConstraintLayout>
+            <ImageView
+                android:id="@+id/profile_image_porthole"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:background="@drawable/circular_porthole_frame"
+                android:elevation="@dimen/project_image_elevation"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+                app:layout_constraintEnd_toEndOf="@+id/profile_image"
+                app:layout_constraintStart_toStartOf="@+id/profile_image"
+                app:layout_constraintTop_toTopOf="@+id/profile_image" />
 
 
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="95dp"
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/phone_text_layout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/rounded_gray_corners"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_text_layout">
+                android:background="@drawable/rounded_gray"
+                android:elevation="@dimen/project_image_elevation"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/profile_cover_image" />
 
-        <ImageView
-            android:id="@+id/phone_text_image"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/rounded_gray" />
-
-        <EditText
-            android:id="@+id/phone_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Phone"
-            android:text="@={viewmodel.phone}"
-            app:layout_constraintTop_toTopOf="@+id/phone_text_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/phone_text_image"
-            tools:layout_editor_absoluteY="0dp" />
-    </android.support.constraint.ConstraintLayout>
-
-    <EditText
-        android:id="@+id/bio_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/rounded_gray_corners"
-        android:ems="10"
-        android:text="@={viewmodel.bio}"
-        android:hint="Bio"
-        android:inputType="textMultiLine"
-        android:padding="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phone_text_layout" />
-
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_primary"
-        android:fontFamily="@font/arimo_bold"
-        android:onClick="@{viewmodel::save}"
-        android:text="SAVE"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bio_text" />
+            <ImageView
+                android:id="@+id/profile_friends_button_frame"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:background="@drawable/circular_porthole_frame"
+                android:elevation="@dimen/project_image_elevation"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_friends_button"
+                app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
+                app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
+                app:layout_constraintTop_toTopOf="@+id/profile_friends_button" />
 
 
-</android.support.constraint.ConstraintLayout>
+            <ImageView
+                android:id="@+id/profile_friends_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="8dp"
+
+                android:background="@drawable/rounded_gray"
+                android:elevation="@dimen/project_image_elevation"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+                app:layout_constraintEnd_toStartOf="@+id/profile_image"
+                app:layout_constraintTop_toTopOf="@+id/profile_image" />
+
+            <TextView
+                android:id="@+id/friend_count_text"
+                android:layout_width="30dp"
+                android:layout_height="14dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:elevation="@dimen/project_image_elevation"
+
+                android:fontFamily="@font/arimo_bold"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
+                app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
+                app:layout_constraintTop_toTopOf="@+id/profile_friends_button" />
+
+            <TextView
+                android:id="@+id/profile_friend_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:elevation="@dimen/project_image_elevation"
+                android:fontFamily="@font/arimo_bold"
+                android:text="Friends"
+                android:textAlignment="center"
+
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/profile_friends_button"
+                app:layout_constraintStart_toStartOf="@+id/profile_friends_button"
+                app:layout_constraintTop_toBottomOf="@+id/friend_count_text" />
+
+            <ImageView
+                android:id="@+id/profile_groups_button_frame"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:background="@drawable/circular_porthole_frame"
+                android:elevation="@dimen/project_image_elevation"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_groups_button"
+                app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
+                app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
+                app:layout_constraintTop_toTopOf="@+id/profile_groups_button" />
+
+
+            <ImageView
+                android:id="@+id/profile_groups_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_gray"
+
+                android:elevation="@dimen/project_image_elevation"
+
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+                app:layout_constraintStart_toEndOf="@+id/profile_image"
+                app:layout_constraintTop_toTopOf="@+id/profile_image" />
+
+            <TextView
+                android:id="@+id/group_count_text"
+                android:layout_width="30dp"
+                android:layout_height="14dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:elevation="@dimen/project_image_elevation"
+                android:fontFamily="@font/arimo_bold"
+
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
+                app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
+                app:layout_constraintTop_toTopOf="@+id/profile_groups_button" />
+
+            <TextView
+                android:id="@+id/profile_group_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:elevation="@dimen/project_image_elevation"
+                android:fontFamily="@font/arimo_bold"
+                android:text="Groups"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/profile_groups_button"
+                app:layout_constraintStart_toStartOf="@+id/profile_groups_button"
+                app:layout_constraintTop_toBottomOf="@+id/group_count_text" />
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/profile_user_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:elevation="@dimen/project_image_elevation"
+                android:innerRadius="0dp"
+                android:shape="ring"
+                android:thicknessRatio="1.9"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toStartOf="@+id/profile_conversation_button"
+                app:layout_constraintTop_toTopOf="@+id/profile_conversation_button">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+
+
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/user"
+
+                    app:layout_constraintEnd_toStartOf="@+id/profile_user_button"
+                    app:layout_constraintStart_toStartOf="@+id/profile_user_button"
+                    app:layout_constraintTop_toTopOf="@+id/profile_user_button"></ImageView>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/profile_conversation_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+
+                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:elevation="@dimen/project_image_elevation"
+                android:innerRadius="0dp"
+                android:shape="ring"
+                android:thicknessRatio="1.9"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/profile_image"
+                app:layout_constraintEnd_toEndOf="@+id/profile_image"
+                app:layout_constraintStart_toStartOf="@+id/profile_image">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+
+
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/conversation"
+
+                    app:layout_constraintEnd_toStartOf="@+id/profile_conversation_button"
+                    app:layout_constraintStart_toStartOf="@+id/profile_conversation_button"
+                    app:layout_constraintTop_toTopOf="@+id/profile_conversation_button"></ImageView>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/profile_eye_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerHorizontal="true"
+
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:elevation="@dimen/project_image_elevation"
+                android:innerRadius="0dp"
+                android:shape="ring"
+                android:thicknessRatio="1.9"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintStart_toEndOf="@+id/profile_conversation_button"
+                app:layout_constraintTop_toTopOf="@+id/profile_conversation_button">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+
+
+                    android:layout_marginLeft="2.5dp"
+                    android:layout_marginTop="7.5dp"
+                    android:background="@drawable/eye"
+
+                    app:layout_constraintEnd_toStartOf="@+id/profile_eye_button"
+                    app:layout_constraintStart_toStartOf="@+id/profile_eye_button"
+                    app:layout_constraintTop_toTopOf="@+id/profile_eye_button"></ImageView>
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/arimo_bold"
+                android:text="My Profile"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/profile_cover_image" />
+
+            <Button
+                android:id="@+id/add_cover_image_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_gradient"
+                android:contentDescription="add cover image"
+                android:onClick="@{view -> viewmodel.activity.chooseCoverImage()}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/add_profile_image_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="75dp"
+                android:layout_marginTop="75dp"
+                android:background="@drawable/rounded_gradient"
+                android:contentDescription="add profile photo"
+
+                android:elevation="100dp"
+                android:onClick="@{view -> viewmodel.activity.chooseProfileImage()}"
+                app:layout_constraintStart_toStartOf="@+id/profile_image"
+                app:layout_constraintTop_toTopOf="@+id/profile_image" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/name_text_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_gray_corners"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile_image_porthole">
+
+                <ImageView
+                    android:id="@+id/name_text_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/rounded_gray" />
+
+                <EditText
+                    android:id="@+id/name_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:ems="10"
+                    android:hint="Name"
+                    android:inputType="textPersonName"
+                    android:text="@={viewmodel.name}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/name_text_image"
+                    app:layout_constraintTop_toTopOf="@+id/name_text_layout"
+                    tools:layout_editor_absoluteY="0dp" />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/location_text_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_gray_corners"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/name_text_layout">
+
+                <fragment
+                    android:id="@+id/location_text"
+                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:hint="Location"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/email_text_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_gray_corners"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/location_text_layout">
+
+                <ImageView
+                    android:id="@+id/email_text_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/rounded_gray" />
+
+                <EditText
+                    android:id="@+id/email_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:ems="10"
+                    android:hint="Email"
+                    android:text="@={viewmodel.email}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/email_text_image"
+                    app:layout_constraintTop_toTopOf="@+id/email_text_layout"
+                    tools:layout_editor_absoluteY="0dp" />
+            </android.support.constraint.ConstraintLayout>
+
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/phone_text_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_gray_corners"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/email_text_layout">
+
+                <ImageView
+                    android:id="@+id/phone_text_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/rounded_gray" />
+
+                <EditText
+                    android:id="@+id/phone_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:ems="10"
+                    android:hint="Phone"
+                    android:inputType="textPersonName"
+                    android:text="@={viewmodel.phone}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/phone_text_image"
+                    app:layout_constraintTop_toTopOf="@+id/phone_text_layout"
+                    tools:layout_editor_absoluteY="0dp" />
+            </android.support.constraint.ConstraintLayout>
+
+            <EditText
+                android:id="@+id/bio_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_gray_corners"
+                android:ems="10"
+                android:hint="Bio"
+                android:inputType="textMultiLine"
+                android:padding="5dp"
+                android:text="@={viewmodel.bio}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/phone_text_layout" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/likes_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+
+
+                android:elevation="@dimen/project_image_elevation"
+                android:padding="16dp"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView16">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/arimo_bold"
+                        android:text="I Like..."
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/likes_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:hint="Tell us what you like."
+                        android:inputType="textMultiLine"
+                        android:text="@={viewmodel.likes}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/arimo_bold"
+                        android:text="I Love..."
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/loves_text" />
+
+                    <EditText
+                        android:id="@+id/loves_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:hint="Tell us what you love."
+                        android:text="@={viewmodel.loves}"
+                        android:inputType="textMultiLine"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/beverages_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+
+
+                android:elevation="@dimen/project_image_elevation"
+                android:padding="16dp"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView17">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/bubble_tea_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        app:layout_constraintEnd_toStartOf="@+id/beer_layout"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:onClick="@{view -> viewmodel.setColorFilter(view, &quot;BubbleTea&quot;)}">
+
+                        <ImageView
+                            android:id="@+id/bubble_tea_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_bubble_tea"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <TextView
+                            android:id="@+id/bubble_tea_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bubble Tea"
+
+                            android:textSize="10sp"
+                            app:layout_constraintTop_toBottomOf="@+id/bubble_tea_icon" />
+
+                        <ImageView
+                            android:id="@+id/bubble_tea_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="8dp"
+
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_check"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/bubble_tea_text" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/beer_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toStartOf="@+id/juice_layout"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/bubble_tea_layout"
+                        android:onClick="@{view -> viewmodel.setColorFilter(view, &quot;Beer&quot;)}">
+
+                        <ImageView
+                            android:id="@+id/beer_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_beer"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/beer_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Wine/Beer"
+
+                            android:textSize="10sp"
+                            app:layout_constraintTop_toBottomOf="@+id/beer_icon" />
+
+                        <ImageView
+                            android:id="@+id/beer_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="8dp"
+
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_check"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/beer_text" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/juice_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        app:layout_constraintEnd_toStartOf="@+id/coffee_layout"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/beer_layout"
+                        android:onClick="@{view -> viewmodel.setColorFilter(view, &quot;Juice&quot;)}">
+
+                        <ImageView
+                            android:id="@+id/juice_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_juice"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/juice_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+
+                            android:layout_marginStart="8dp"
+                            android:text="Juice"
+                            android:textSize="10sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/juice_icon" />
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="8dp"
+
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_check"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/juice_text" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/coffee_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/juice_layout"
+
+                        android:onClick="@{view -> viewmodel.setColorFilter(view, &quot;Coffee&quot;)}">
+
+                        <ImageView
+                            android:id="@+id/coffee_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_coffee"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/coffee_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Coffee/Tea"
+
+                            android:textSize="10sp"
+                            app:layout_constraintTop_toBottomOf="@+id/coffee_icon" />
+
+                        <ImageView
+                            android:id="@+id/coffee_button"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="8dp"
+
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_check"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/coffee_text"
+
+                             />
+
+                        <!--<ImageView-->
+                            <!--android:id="@+id/coffee_button_active"-->
+                            <!--android:layout_width="40dp"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:layout_marginEnd="8dp"-->
+
+                            <!--android:layout_marginStart="8dp"-->
+                            <!--android:src="@drawable/ic_check"-->
+                            <!--app:layout_constraintEnd_toEndOf="parent"-->
+                            <!--app:layout_constraintStart_toStartOf="parent"-->
+                            <!--app:layout_constraintTop_toBottomOf="@+id/coffee_text" />-->
+
+
+                    </android.support.constraint.ConstraintLayout>
+
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/button_primary"
+                android:fontFamily="@font/arimo_bold"
+                android:onClick="@{viewmodel::save}"
+                android:text="SAVE"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/beverages_card" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/arimo_bold"
+                android:text="My Interests"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bio_text" />
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/arimo_bold"
+                android:text="Beverage Preferences"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/likes_card" />
+
+
+        </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
 </layout>

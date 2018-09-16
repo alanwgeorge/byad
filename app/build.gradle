@@ -10,13 +10,17 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.tylerwalker.buyyouadrink"
-        minSdkVersion 26
+        minSdkVersion 24
         targetSdkVersion 28
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables {
+            useSupportLibrary true
+        }
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -115,10 +119,10 @@ dependencies {
     implementation 'io.github.ranga543:yelp-fusion-client:0.1.4'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.google.firebase:firebase-auth:16.0.3'
     implementation 'com.github.FrangSierra:RxFirebase:1.5.0'
-    implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-database:16.0.2'
     implementation 'com.google.firebase:firebase-firestore:17.1.0'
 
 

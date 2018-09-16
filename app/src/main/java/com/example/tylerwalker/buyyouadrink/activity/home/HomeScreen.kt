@@ -18,7 +18,6 @@ import com.example.tylerwalker.buyyouadrink.activity.messages.MessagesActivity
 import com.example.tylerwalker.buyyouadrink.activity.profile.ProfileActivity
 import com.example.tylerwalker.buyyouadrink.module.App
 import com.example.tylerwalker.buyyouadrink.model.Coordinates
-import com.example.tylerwalker.buyyouadrink.model.Drink
 import com.example.tylerwalker.buyyouadrink.model.User
 import com.example.tylerwalker.buyyouadrink.service.LocationService
 import javax.inject.Inject
