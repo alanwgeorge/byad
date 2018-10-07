@@ -1,12 +1,11 @@
 package com.example.tylerwalker.buyyouadrink.activity.map
 
-import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.*
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import com.example.tylerwalker.buyyouadrink.R
 import com.example.tylerwalker.buyyouadrink.model.Coordinates
 import com.example.tylerwalker.buyyouadrink.model.Drink
@@ -15,36 +14,65 @@ import com.example.tylerwalker.buyyouadrink.service.YelpService
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
+import com.yelp.fusion.client.models.Category
 import com.yelp.fusion.client.models.SearchResponse
 import kotlinx.android.synthetic.main.activity_map.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.opengl.ETC1.getHeight
+import android.opengl.ETC1.getWidth
+import android.graphics.drawable.VectorDrawable
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v4.content.res.ResourcesCompat
+import android.graphics.drawable.Drawable
+import android.provider.MediaStore.Images.Media.getBitmap
+import android.support.annotation.ColorInt
+import android.support.annotation.DrawableRes
+import android.widget.Toast
+import com.example.tylerwalker.buyyouadrink.R.id.*
+import com.example.tylerwalker.buyyouadrink.module.App
+import com.example.tylerwalker.buyyouadrink.service.LocationService
+import com.google.android.gms.maps.model.BitmapDescriptor
+import javax.inject.Inject
 
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val SHARED_PREFERENCES_CURRENT_USER_KEY = "current_user"
+    private lateinit var sharedPreferences: SharedPreferences
+
     private var targetUser: User? = null
     private var sourceUser: User? = null
-    private lateinit var sharedPreferences: SharedPreferences
+
+    private val manager = supportFragmentManager
+    private var invitationFragment: Invitation? = null
+
     val visibleDrinks = mutableListOf(Drink.Coffee, Drink.Juice, Drink.Beer, Drink.BubbleTea)
 
     private val yelpAPI = YelpService().api
 
-    private var markers = mutableMapOf(
-            Drink.Coffee to mutableListOf<Marker>(),
-            Drink.Juice to mutableListOf<Marker>(),
-            Drink.Beer to mutableListOf<Marker>(),
-            Drink.BubbleTea to mutableListOf<Marker>()
+    private var markers = mutableMapOf<Drink, MutableList<Marker>>(
+            Drink.Coffee to mutableListOf(),
+            Drink.Juice to mutableListOf(),
+            Drink.Beer to mutableListOf(),
+            Drink.BubbleTea to mutableListOf()
     )
     private var sourceMarker: Marker? = null
     private var targetMarker: Marker? = null
 
     private var map: GoogleMap? = null
+    private val maxZoomPreference = 14.5F
+
+    private val component = App().getComponent(this)
+
+    @Inject
+    lateinit var locationService: LocationService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
+        component.inject(this)
 
         sharedPreferences = getSharedPreferences("com.example.tylerwalker.buyyouadrink", Context.MODE_PRIVATE)
 
@@ -71,7 +99,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         sourceUser?.let {
             val sourceLoc = LatLng(it.location.latitude.toDouble(), it.location.longitude.toDouble())
             sourceMarker = map?.addMarker(MarkerOptions().position(sourceLoc).title("${it.first_name} ${it.last_name}").icon(BitmapDescriptorFactory.defaultMarker()))
-            builder.include(sourceMarker?.position)
         }
 
         targetUser?.let {
@@ -81,63 +108,130 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         val bounds = builder.build()
+        map?.setMaxZoomPreference(maxZoomPreference)
         map?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200))
 
-
         // set up search params
-        val params: MutableMap<String, String> = mutableMapOf()
-        params.put("categories", "beer_and_wine,coffee,juicebars,bubbletea")
-
-        val midpoint = getMidpoint(sourceUser!!, targetUser!!)
-        params.put("latitude", "${midpoint.latitude}")
-        params.put("longitude", "${midpoint.longitude}")
-
-        params.put("limit", "50")
+        val params = buildSearchParams()
 
         val infoWindowAdapter = PlaceInfoWindowAdapter(this)
         map?.setInfoWindowAdapter(infoWindowAdapter)
+        map?.setOnInfoWindowClickListener {
+            it.hideInfoWindow()
+            showInvitation(it)
+        }
 
         val call = yelpAPI.getBusinessSearch(params)
         call.enqueue(ResponseHandler())
 
-        wine_button.setOnClickListener { toggleCategory(Drink.BubbleTea) }
-        beer_button.setOnClickListener { toggleCategory(Drink.Beer) }
-        juice_button.setOnClickListener { toggleCategory(Drink.Juice) }
         coffee_button.setOnClickListener { toggleCategory(Drink.Coffee) }
+        beer_button.setOnClickListener { toggleCategory(Drink.Beer) }
+        bubble_tea_button.setOnClickListener { toggleCategory(Drink.BubbleTea) }
+        juice_button.setOnClickListener { toggleCategory(Drink.Juice) }
+    }
+
+    private fun buildSearchParams(): MutableMap<String, String> {
+        val params: MutableMap<String, String> = mutableMapOf()
+
+        params["categories"] = "beer_and_wine,coffee,juicebars,bubbletea"
+        params["latitude"] = targetUser?.location?.latitude.toString()
+        params["longitude"] = targetUser?.location?.longitude.toString()
+        params["limit"] = "50"
+//        params["sort_by"] = "rating"
+
+        return params
     }
 
 
     inner class ResponseHandler: Callback<SearchResponse> {
         override fun onFailure(call: Call<SearchResponse>?, t: Throwable?) {
+            Toast.makeText(this@MapActivity, "There was a problem searching for businesses in your area...", Toast.LENGTH_SHORT).show()
             Log.e("yelp", "error ${t?.cause}")
         }
 
         override fun onResponse(call: Call<SearchResponse>?, response: Response<SearchResponse>?) {
             val res = response?.body()
 
-//            Log.d("yelp", "businesses ${res?.businesses.toString()}")
-
             res?.let {
-                res.businesses.forEach {
+                res.businesses.run {
+                    shuffle()
+                    dropLast(25).forEach { business ->
 
-                    val lat = it.coordinates.latitude
-                    val long = it.coordinates.longitude
-                    val marker = map?.addMarker(MarkerOptions().position(LatLng(lat, long)).title(it.name).snippet(it.categories.toString()))
-//                    Log.d("marker", "name: ${it.name}")
-                    it.categories.map {
-//                        Log.d("marker", "category: ${it.title}, alias: ${it.alias}")
-                        when (it.alias) {
-                            "coffee" -> marker?.let { it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.coffee)); markers[Drink.Coffee]?.add(it) }
-                            "beer_and_wine" -> marker?.let {  it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.beer)); markers[Drink.Beer]?.add(it) }
-                            "juicebars" -> marker?.let {  it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.juice));markers[Drink.Juice]?.add(it) }
-                            "bubbletea" -> marker?.let {  it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.wine));markers[Drink.BubbleTea]?.add(it) }
-                            else -> {}
+                        val lat = business.coordinates.latitude
+                        val long = business.coordinates.longitude
+
+                        val markerOptions = MarkerOptions()
+                                .position(LatLng(lat, long))
+                                .title(business.name)
+                                .snippet(business.rating.toString())
+
+                        business.categories.map { category ->
+                            when (category.alias) {
+                                "coffee" -> addMarkerToCoffee(markerOptions)
+                                "beer_and_wine" -> addMarkerToBeer(markerOptions)
+                                "bubbletea" -> addMarkerToBubbleTea(markerOptions)
+                                "juicebars" -> addMarkerToJuice(markerOptions)
+                                else -> { }
+                            }
                         }
                     }
-
-//                    markers.toList().map { Log.d("marker", "category: ${it.first.name}, count: ${it.second.count()}")}
-
                 }
+
+                toggleCategories()
+
+                targetUser?.favorite_drink?.let {
+                    when (it) {
+                        "Coffee" -> toggleCategory(Drink.Coffee)
+                        "Juice" -> toggleCategory(Drink.Juice)
+                        "Beer" -> toggleCategory(Drink.Beer)
+                        "BubbleTea" -> toggleCategory(Drink.BubbleTea)
+                        else -> toggleCategories()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addMarkerToCoffee(markerOptions: MarkerOptions) {
+        markerOptions.icon(vectorToBitmap(R.drawable.ic_coffee_marker))
+
+        map?.run {
+            addMarker(markerOptions).apply {
+                markers[Drink.Coffee]?.add(this)
+                tag = Drink.Coffee.name
+            }
+        }
+    }
+
+    private fun addMarkerToBeer(markerOptions: MarkerOptions) {
+        markerOptions.icon(vectorToBitmap(R.drawable.ic_beer_marker))
+
+        map?.run {
+            addMarker(markerOptions).apply {
+                markers[Drink.Beer]?.add(this)
+                tag = Drink.Beer.name
+            }
+        }
+    }
+
+    private fun addMarkerToBubbleTea(markerOptions: MarkerOptions) {
+        markerOptions.icon(vectorToBitmap(R.drawable.ic_bubble_tea_marker))
+
+        map?.run {
+            addMarker(markerOptions).apply {
+                markers[Drink.BubbleTea]?.add(this)
+                tag = Drink.BubbleTea.name
+            }
+        }
+    }
+
+    private fun addMarkerToJuice(markerOptions: MarkerOptions) {
+        markerOptions.icon(vectorToBitmap(R.drawable.ic_juice_marker))
+
+        map?.run {
+            addMarker(markerOptions).apply {
+                markers[Drink.Juice]?.add(this)
+                tag = Drink.Juice.name
             }
         }
     }
@@ -149,6 +243,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         return Coordinates((locA.latitude + locB.latitude)/2, (locA.longitude + locB.longitude)/2)
     }
 
+    private fun toggleCategories() {
+        toggleCategory(Drink.Juice)
+        toggleCategory(Drink.Coffee)
+        toggleCategory(Drink.Beer)
+        toggleCategory(Drink.BubbleTea)
+    }
+
     fun toggleCategory(drink: Drink) {
         if (visibleDrinks.contains(drink)) {
             visibleDrinks.remove(drink)
@@ -156,14 +257,67 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             markers[drink]?.forEach {
                 it.isVisible = false
             }
+
+            when (drink) {
+                Drink.Coffee -> coffee_button.setCardBackgroundColor(Color.WHITE)
+                Drink.BubbleTea -> bubble_tea_button.setCardBackgroundColor(Color.WHITE)
+                Drink.Beer -> beer_button.setCardBackgroundColor(Color.WHITE)
+                Drink.Juice -> juice_button.setCardBackgroundColor(Color.WHITE)
+            }
+
         } else {
             visibleDrinks.add(drink)
 
             markers[drink]?.forEach {
                 it.isVisible = true
             }
+
+            when (drink) {
+                Drink.Coffee -> coffee_button.setCardBackgroundColor(Color.parseColor("#FF3B00"))
+                Drink.BubbleTea -> bubble_tea_button.setCardBackgroundColor(Color.parseColor("#FF3B00"))
+                Drink.Beer -> beer_button.setCardBackgroundColor(Color.parseColor("#FF3B00"))
+                Drink.Juice -> juice_button.setCardBackgroundColor(Color.parseColor("#FF3B00"))
+            }
         }
     }
 
+    private fun showInvitation(marker: Marker) {
+        invitationFragment?.let {
+            manager.beginTransaction().remove(it).commit()
+        }
 
+        invitationFragment = Invitation().apply {
+            arguments = buildBundle(marker)
+
+            supportFragmentManager.beginTransaction()
+                    .add(this, "invitation")
+                    .commit()
+        }
+    }
+
+    fun dismissInvitation() {
+        invitationFragment?.let {
+            manager.beginTransaction().remove(it).commit()
+        }
+
+        invitationFragment = null
+    }
+
+    private fun buildBundle(marker: Marker): Bundle? = Bundle().apply {
+        putString("placeName", marker.title)
+        putString("beverageType", marker.tag as String)
+        putString("locationName", locationService.getLocationName(this@MapActivity, Coordinates(marker.position.latitude.toFloat(), marker.position.longitude.toFloat())))
+        putString("inviteeName", targetUser?.first_name + " " + targetUser?.last_name)
+    }
+
+    private fun vectorToBitmap(@DrawableRes id: Int, @ColorInt color: Int? = null): BitmapDescriptor {
+        val vectorDrawable = ResourcesCompat.getDrawable(resources, id, null)
+        val bitmap = Bitmap.createBitmap(vectorDrawable!!.intrinsicWidth / 3,
+                vectorDrawable.intrinsicHeight /3, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+        color?.let { DrawableCompat.setTint(vectorDrawable, it) }
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
 }

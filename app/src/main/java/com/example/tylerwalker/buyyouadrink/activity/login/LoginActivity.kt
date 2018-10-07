@@ -139,7 +139,7 @@ class LoginActivity : AppCompatActivity() {
             Intent(this, HomeScreen::class.java)
         }
 
-        intent = Intent(this, OnBoarding::class.java)
+//        intent = Intent(this, OnBoarding::class.java)
 
         startActivity(intent)
     }

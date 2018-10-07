@@ -19,4 +19,8 @@
     </string>
     <string name="email_hint">john@email.com</string>
     <string name="password_hint">Enter your password..</string>
+    <string name="send">Send</string>
+    <string name="confirm">Confirm</string>
+    <string name="choose_here">Choose Here</string>
+    <string name="compose_invitation">Compose Invitation</string>
 </resources>
