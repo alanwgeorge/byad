@@ -23,4 +23,5 @@
     <string name="confirm">Confirm</string>
     <string name="choose_here">Choose Here</string>
     <string name="compose_invitation">Compose Invitation</string>
+    <string name="register">REGISTER</string>
 </resources>

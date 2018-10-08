@@ -1,6 +1,7 @@
 package com.example.tylerwalker.buyyouadrink.model
 
 import android.util.Log
+import com.example.tylerwalker.buyyouadrink.R.drawable.user
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.GeoPoint
@@ -17,22 +18,21 @@ class UserRepository {
         firestore.firestoreSettings = settings
     }
 
-    fun getUser(user: User): Single<UserResponse> {
-        val uid = user.user_id
+    fun getUser(uid: String): Single<UserResponse> {
         val doc = firestore.collection("users").document(uid)
         Log.d("UserRepository", "get user with uid: $uid, doc: $doc")
 
         return RxFirestore.getDocument(doc)
                 .map {
                     Log.d("UserRepository", "got user: ${it.data}")
-                    it.data?.let { UserResponse(parseUser(it), true) }
-                            ?: throw Error("No user found")
+                    it.data?.let { userData -> UserResponse(parseUser(userData), true) }
+                            ?: UserResponse(null, false, "User was not found.")
                 }
                 .toSingle()
                 .onErrorResumeNext {
                     Log.d("UserRepository", "error: ${it.message}")
                     if (it.message == "The MaybeSource is empty") {
-                        createUser(user)
+                        Single.just(UserResponse(null, false))
                     } else {
                         Single.just(UserResponse(null, false))
                     }
@@ -47,7 +47,7 @@ class UserRepository {
         )
         val userDoc = firestore.collection("users").document(user.user_id)
         RxFirestore.setDocument(userDoc, userMap).subscribe()
-        return getUser(user)
+        return getUser(user.user_id)
     }
 
     fun updateUser(user: User): Single<UserResponse> {

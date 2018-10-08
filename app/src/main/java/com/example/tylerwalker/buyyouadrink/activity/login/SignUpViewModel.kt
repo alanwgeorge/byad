@@ -14,6 +14,7 @@ import android.widget.Toast
 import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
 import com.example.tylerwalker.buyyouadrink.activity.onboarding.OnBoarding
 import com.example.tylerwalker.buyyouadrink.model.AuthResponse
+import com.example.tylerwalker.buyyouadrink.model.Credentials
 import com.example.tylerwalker.buyyouadrink.model.LocalStorage
 import com.example.tylerwalker.buyyouadrink.service.AuthService
 import com.google.android.gms.flags.impl.SharedPreferencesFactory.getSharedPreferences
@@ -60,7 +61,7 @@ class SignUpViewModel(app: Application): AndroidViewModel(app), LifecycleObserve
 
     private fun asyncLogin(name: String, email: String, password: String) {
         try {
-            authService.register(name, email, password)
+            authService.register(Credentials(email, password))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(RegisterObserver())
@@ -85,16 +86,10 @@ class SignUpViewModel(app: Application): AndroidViewModel(app), LifecycleObserve
     private fun handleResponse(response: AuthResponse) {
         Log.d("user", "response: ${response}")
         if (!response.status) {
-            if (response.error == "email in use") {
-                Toast.makeText(activity, "That email is already associated with one of our users.", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(activity, "Something went wrong...", Toast.LENGTH_LONG).show()
-            }
             return
         }
 
         var intent: Intent?
-        localStorage.setCurrentUser(response.user)
 
         if (localStorage.isFirstRun()) {
             localStorage.setFirstRun()

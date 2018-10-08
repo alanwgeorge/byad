@@ -2,6 +2,7 @@ package com.example.tylerwalker.buyyouadrink.module
 
 import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
 import com.example.tylerwalker.buyyouadrink.activity.login.LoginActivity
+import com.example.tylerwalker.buyyouadrink.activity.login.LoginViewModel
 import com.example.tylerwalker.buyyouadrink.activity.login.SignUpActivity
 import com.example.tylerwalker.buyyouadrink.activity.login.SignUpViewModel
 import com.example.tylerwalker.buyyouadrink.activity.map.MapActivity
@@ -15,6 +16,7 @@ import javax.inject.Singleton
 @Component(modules = [ApplicationModule::class])
 interface ApplicationComponent {
     fun inject(loginActivity: LoginActivity)
+    fun inject(loginViewModel: LoginViewModel)
     fun inject(signUpActivity: SignUpActivity)
     fun inject(signUpViewModel: SignUpViewModel)
     fun inject(homeActivity: HomeScreen)
