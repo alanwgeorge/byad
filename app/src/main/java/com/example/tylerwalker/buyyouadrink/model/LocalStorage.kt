@@ -3,6 +3,7 @@ package com.example.tylerwalker.buyyouadrink.model
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.system.Os.remove
 import android.util.Log
 import com.example.tylerwalker.buyyouadrink.R.id.email
 import com.example.tylerwalker.buyyouadrink.module.App
@@ -15,21 +16,23 @@ class LocalStorage(val context: Context) {
         prefs
     }
 
-    private val SHARED_PREFERENCES_CURRENT_USER_KEY = "current_user"
-    private val SHARED_PREFERENCES_FIRST_RUN_KEY = "first_run"
+    private val sharedPreferencesCurrentUserKey = "current_user"
+    private val sharedPreferencesFirstRunKey = "first_run"
     private val sharedPreferencesRememberMeKey = "remember_me"
     private val sharedPreferencesSavedEmailKey = "saved_email_key"
     private val sharedPreferencesSavedPasswordKey = "saved_password_key"
+    private val sharedPreferencesCurrentUserIDKey = "current_uid"
 
-    fun getCurrentUser(): User? = Gson().fromJson(sharedPreferences.getString(SHARED_PREFERENCES_CURRENT_USER_KEY, null), User::class.java)
-    fun setCurrentUser(user: User?) {
+    fun getCurrentUser(): User? = Gson().fromJson(sharedPreferences.getString(sharedPreferencesCurrentUserKey, null), User::class.java)
+    fun putCurrentUser(user: User?) {
         Log.d("LocalStorage", "put user: $user")
         val json = Gson().toJson(user)
-        sharedPreferences.edit().putString(SHARED_PREFERENCES_CURRENT_USER_KEY, json).apply()
+        sharedPreferences.edit().putString(sharedPreferencesCurrentUserKey, json).apply()
         Log.d("LocalStorage", "put user success: $json")
     }
-    fun isFirstRun(): Boolean = sharedPreferences.getBoolean(SHARED_PREFERENCES_FIRST_RUN_KEY, false)
-    fun setFirstRun(isFirstRun: Boolean = false) = sharedPreferences.edit().putBoolean(SHARED_PREFERENCES_FIRST_RUN_KEY, isFirstRun).apply()
+    fun clearCurrentUser() = sharedPreferences.edit().remove(sharedPreferencesCurrentUserKey)
+    fun isFirstRun(): Boolean = sharedPreferences.getBoolean(sharedPreferencesFirstRunKey, false)
+    fun setFirstRun(isFirstRun: Boolean = false) = sharedPreferences.edit().putBoolean(sharedPreferencesFirstRunKey, isFirstRun).apply()
 
     fun shouldRememberMe(rememberMe: Boolean = true) = sharedPreferences.edit().putBoolean(sharedPreferencesRememberMeKey, rememberMe).apply()
     fun rememberMe(): Boolean? = sharedPreferences.getBoolean(sharedPreferencesRememberMeKey, true)
@@ -55,6 +58,9 @@ class LocalStorage(val context: Context) {
             remove(sharedPreferencesSavedPasswordKey)
         }.apply()
     }
+
+    fun getCurrentUid() = sharedPreferences.getString(sharedPreferencesCurrentUserIDKey, null)
+    fun putCurrentUid(uid: String) = sharedPreferences.edit().putString(sharedPreferencesCurrentUserIDKey, uid).commit()
 
     fun putString(key: String, value: String) {
         sharedPreferences.edit().putString(key, value).apply()

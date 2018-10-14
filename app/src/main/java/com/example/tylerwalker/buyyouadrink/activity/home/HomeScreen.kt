@@ -16,6 +16,7 @@ import com.example.tylerwalker.buyyouadrink.R
 import com.example.tylerwalker.buyyouadrink.activity.Settings.SettingsActivity
 import com.example.tylerwalker.buyyouadrink.activity.messages.MessagesActivity
 import com.example.tylerwalker.buyyouadrink.activity.profile.ProfileActivity
+import com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity
 import com.example.tylerwalker.buyyouadrink.module.App
 import com.example.tylerwalker.buyyouadrink.model.Coordinates
 import com.example.tylerwalker.buyyouadrink.model.User
@@ -36,8 +37,8 @@ class HomeScreen : AppCompatActivity() {
     val image_url_2 = "https://res.cloudinary.com/wells-fargo/image/upload/v1531196082/selfie_400_400.jpg"
 
     val testUsers = arrayOf(
-            User("1","Tyler", "Walker", Coordinates(37.8716F, -122.2727F), "Beer", "I like to drink coffee.", image_url = image_url),
-            User("2","Kelsi", "Yuan", Coordinates(37.7749F, 122.4194F), "Tea","Let's have some cocktails tonight!", image_url = image_url_2))
+            User("1", Coordinates(37.8716F, -122.2727F), "I like coffee.", "Tyler Walker", "abc@123.com", "1234567890", "Yo", "Coffee", image_url, ""),
+            User("2", Coordinates(37.7749F, 122.4194F), "Let's have some cocktails tonight!", "Kelsi Yuan", "1234567890", "Hi", "BubbleTea", "BubbleTea", image_url_2))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +90,7 @@ class HomeScreen : AppCompatActivity() {
     }
 
     fun transitionToSettings(view: View) {
-        val intent = Intent(this, SettingsActivity::class.java)
+        val intent = Intent(this, SetupProfileActivity::class.java)
         startActivity(intent)
     }
 

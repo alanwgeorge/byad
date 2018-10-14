@@ -1,12 +1,9 @@
 package com.example.tylerwalker.buyyouadrink.activity.home
 
-import android.app.Activity
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.support.constraint.ConstraintLayout
-import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -16,7 +13,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.tylerwalker.buyyouadrink.R
-import com.example.tylerwalker.buyyouadrink.R.id.textView
 import com.example.tylerwalker.buyyouadrink.model.User
 import java.io.InputStream
 
@@ -35,16 +31,16 @@ class Adapter(private val data: Array<User>, val activity: HomeScreen): Recycler
         val imageView = holder.element.findViewById<ImageView>(R.id.recycler_element_image)
         val button = holder.element.findViewById<Button>(R.id.recycler_element_button)
         val user = data[position]
-        nameTextView.text = "${user.first_name} ${user.last_name}"
+        nameTextView.text = "${user.display_name}"
         captionTextView.text = "${user.caption}"
 
-        if (user.image_url != null) {
-            ImageLoader(imageView).execute(user.image_url)
+        if (user.profile_image != null) {
+            ImageLoader(imageView).execute(user.profile_image)
         }
 
-        button.setOnClickListener({
+        button.setOnClickListener {
             activity.transitionToProfile(data[position].user_id)
-        })
+        }
     }
 
     override fun getItemCount(): Int = data.size

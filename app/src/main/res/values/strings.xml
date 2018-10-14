@@ -24,4 +24,13 @@
     <string name="choose_here">Choose Here</string>
     <string name="compose_invitation">Compose Invitation</string>
     <string name="register">REGISTER</string>
+    <string name="bubble_tea">Bubble Tea</string>
+    <string name="wine_beer">Wine/Beer</string>
+    <string name="juice">Juice</string>
+    <string name="coffee">Coffee</string>
+    <string name="talk_about_yourself">Talk about yourself...</string>
+    <string name="beverage_preferences">Beverage Preferences</string>
+    <string name="save">SAVE</string>
+    <string name="add_cover_image">add cover image</string>
+    <string name="my_profile_title">My Profile</string>
 </resources>

@@ -92,7 +92,6 @@ class SignUpViewModel(app: Application): AndroidViewModel(app), LifecycleObserve
         var intent: Intent?
 
         if (localStorage.isFirstRun()) {
-            localStorage.setFirstRun()
             intent = Intent(activity, OnBoarding::class.java)
         } else {
             intent = Intent(activity, HomeScreen::class.java)

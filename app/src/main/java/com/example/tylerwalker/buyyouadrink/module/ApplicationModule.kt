@@ -1,10 +1,7 @@
 package com.example.tylerwalker.buyyouadrink.module
 
 import android.content.Context
-import com.example.tylerwalker.buyyouadrink.model.AuthEvent
-import com.example.tylerwalker.buyyouadrink.model.LocalStorage
-import com.example.tylerwalker.buyyouadrink.model.NavigationEvent
-import com.example.tylerwalker.buyyouadrink.model.UserRepository
+import com.example.tylerwalker.buyyouadrink.model.*
 import com.example.tylerwalker.buyyouadrink.service.AuthService
 import com.example.tylerwalker.buyyouadrink.service.LocationService
 import dagger.Module
@@ -57,4 +54,12 @@ class ApplicationModule(val context: Context) {
     @Provides
     @Singleton
     fun provideNavigationEventsFlowable(processor: PublishProcessor<NavigationEvent>): Flowable<NavigationEvent> = processor
+
+    @Provides
+    @Singleton
+    fun provideProfileEventsProcessor(): PublishProcessor<ProfileEvent> = PublishProcessor.create()
+
+    @Provides
+    @Singleton
+    fun provideProfileEventsFlowable(processor: PublishProcessor<ProfileEvent>): Flowable<ProfileEvent> = processor
 }

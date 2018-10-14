@@ -1,25 +1,43 @@
 package com.example.tylerwalker.buyyouadrink.activity.profile
 
 import android.app.Activity
+import android.app.Application
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.graphics.PorterDuff
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.constraint.ConstraintLayout
+import android.support.v4.app.ActivityCompat.startActivityForResult
+import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import com.example.tylerwalker.buyyouadrink.R
+import com.example.tylerwalker.buyyouadrink.R.id.*
 import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
 import com.example.tylerwalker.buyyouadrink.databinding.ActivitySetupProfileBinding
 import com.example.tylerwalker.buyyouadrink.model.Drink
+import com.example.tylerwalker.buyyouadrink.model.NavigationEvent
+import com.example.tylerwalker.buyyouadrink.model.ProfileEvent
 import com.example.tylerwalker.buyyouadrink.module.App
 import com.example.tylerwalker.buyyouadrink.service.LocationService
 import com.example.tylerwalker.buyyouadrink.util.toBitmap
 import com.example.tylerwalker.buyyouadrink.util.toEncodedString
 import com.example.tylerwalker.buyyouadrink.util.toRoundedDrawable
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment
+import io.reactivex.Flowable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.processors.PublishProcessor
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_setup_profile.*
 import java.io.IOException
 import javax.inject.Inject
@@ -27,6 +45,15 @@ import javax.inject.Inject
 class SetupProfileActivity : AppCompatActivity() {
     @Inject
     lateinit var locationService: LocationService
+
+    @Inject
+    lateinit var profileEventsFlowable: Flowable<ProfileEvent>
+    @Inject
+    lateinit var navigationEventsFlowable: Flowable<NavigationEvent>
+
+    var trash = CompositeDisposable()
+
+    private val logTag = "SetupProfileActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,50 +68,105 @@ class SetupProfileActivity : AppCompatActivity() {
         ViewModelProviders.of(this).get(SetupProfileViewModel::class.java).apply {
             component.inject(this)
             lifecycle.addObserver(this)
+            binding.viewmodel = this
 
             val user = localStorage.getCurrentUser()
 
             val autocomplete = fragmentManager.findFragmentById(R.id.location_text) as PlaceAutocompleteFragment
             autocomplete.setOnPlaceSelectedListener(GooglePlaceSelectionListener())
 
-            name.value = null
-            location.value = null
-            email.value = null
-            phone.value = null
-            bio.value = null
-            likes.value = null
-            loves.value = null
+
             drinkSelections.value = mutableListOf()
 
             user?.let {
-                Log.d("SetupProfileActivity", it.toString())
-                it.display_name?.let { name.value = it; name_text.setText(it) }
-                it.location?.let { location.value = it; autocomplete.setText(locationService.getLocationName(this@SetupProfileActivity, it)) }
-                it.email?.let { email.value = it; email_text.setText(it) }
-                it.phone?.let { phone.value = it; phone_text.setText(it) }
-                it.bio?.let { bio.value = it; bio_text.setText(it) }
-                it.likes?.let { likes.value = it; likes_text.setText(it) }
-                it.loves?.let { loves.value = it; loves_text.setText(it) }
-                it.profile_image?.let {
+                Log.d(logTag, it.toString())
+                it.display_name.let { name.value = it; name_text.setText(it) }
+                it.location.let { location.value = it; autocomplete.setText(locationService.getLocationName(this@SetupProfileActivity, it)) }
+                it.email.let { email.value = it; email_text.setText(it) }
+                it.phone.let { phone.value = it; phone_text.setText(it) }
+                it.bio.let { bio.value = it; bio_text.setText(it) }
+                it.profile_image.let {
                     profileImage.value = it
                     val round = it.toBitmap()?.toRoundedDrawable(resources)
                     profile_image.setImageDrawable(round)
                     profile_image.scaleType = ImageView.ScaleType.CENTER_CROP
                 }
-                it.cover_image?.let { coverImage.value = it; profile_cover_image.updateBitmap(it.toBitmap()) }
-                val drinks = mutableListOf<Drink>()
-                it.drinks?.let {
-                    it.split(",").forEach {
-                        drinks.add(getDrink(it))
-                    }
-                }
-                drinkSelections.value = drinks
+                it.cover_image.let { coverImage.value = it; profile_cover_image.updateBitmap(it.toBitmap()) }
+                it.drinks
+                    .split(",")
+                    .forEach { drinkName -> addDrinkToSelections(getDrink(drinkName)) }
+            }
+        }
+
+        trash.add(observeDrinkToggleEvents())
+        trash.add(observeNavigationEvents())
+        trash.add(observeChooseProfileImageEvents())
+        trash.add(observeChooseCoverImageEvents())
+    }
+
+    private fun observeDrinkToggleEvents(): Disposable = profileEventsFlowable
+            .filter { it is ProfileEvent.ToggleDrink }
+            .map { it as ProfileEvent.ToggleDrink }
+            .doOnNext { Log.d(logTag, "ProfileEvent: ToggleDrink: ${it.drink}, ${it.drink.isSelected}") }
+            .map { updateUIForDrink(it.drink) }
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+
+    private fun observeChooseProfileImageEvents(): Disposable = profileEventsFlowable
+            .filter { it === ProfileEvent.ChooseProfileImage }
+            .map { chooseProfileImage() }
+            .subscribe()
+
+    private fun observeChooseCoverImageEvents(): Disposable = profileEventsFlowable
+            .filter { it === ProfileEvent.ChooseCoverImage }
+            .map { chooseCoverImage() }
+            .subscribe()
+
+    private fun observeNavigationEvents(): Disposable = navigationEventsFlowable
+            .filter { it === NavigationEvent.Home }
+            .doOnNext { transitionToHome() }
+            .subscribe()
+
+    private fun updateUIForDrink(drink: Drink) {
+        Log.d(logTag, "updateUIForDrink(): $drink")
+
+        val view = getLayout(drink)
+        val darkColor = resources.getColor(android.R.color.holo_blue_dark, null)
+
+        if (drink.isSelected) {
+            view.getChildAt(0).let {
+                it as ImageView
+                it.setColorFilter(darkColor, PorterDuff.Mode.SRC_IN)
             }
 
-            activity = this@SetupProfileActivity
-            binding.viewmodel = this
+            view.getChildAt(1).let {
+                it as TextView
+                it.setTextColor(darkColor)
+            }
+
+            view.getChildAt(2).let {
+                it as ImageView
+                it.setColorFilter(darkColor, PorterDuff.Mode.SRC_IN)
+            }
+        } else {
+            view.getChildAt(0).let {
+                it as ImageView
+                it.clearColorFilter()
+            }
+
+            view.getChildAt(1).let {
+                it as TextView
+                it.setTextColor(resources.getColor(android.R.color.black, null))
+            }
+
+            view.getChildAt(2).let {
+                it as ImageView
+                it.clearColorFilter()
+            }
         }
     }
+
 
     private fun getDrink(drinkName: String): Drink {
         return when(drinkName) {
@@ -94,6 +176,13 @@ class SetupProfileActivity : AppCompatActivity() {
             "Juice" -> Drink.Juice
             else -> Drink.Coffee
         }
+    }
+
+    private fun getLayout(drink: Drink): ConstraintLayout = when (drink) {
+        Drink.BubbleTea -> bubble_tea_layout
+        Drink.Juice -> juice_layout
+        Drink.Coffee -> coffee_layout
+        Drink.Beer -> beer_layout
     }
 
     fun chooseProfileImage() {
@@ -121,7 +210,7 @@ class SetupProfileActivity : AppCompatActivity() {
             val fileUri = data?.data
             try {
                 val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, fileUri)
-                Log.d("SetupProfileActivity", "bitmap: $bitmap")
+                Log.d(logTag, "bitmap: $bitmap")
 
                 ViewModelProviders.of(this).get(SetupProfileViewModel::class.java).apply {
                     when (requestCode) {
@@ -141,7 +230,7 @@ class SetupProfileActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: IOException) {
-                Log.d("SetupProfileActivity", "exception: ${e.message}")
+                Log.d(logTag, "exception: ${e.message}")
                 Toast.makeText(this, "There was a problem with that image.", Toast.LENGTH_SHORT).show()
             }
         } else {

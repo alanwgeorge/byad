@@ -106,6 +106,7 @@
             android:text="remember me"
             android:textColor="@android:color/white"
             android:textStyle="bold"
+            android:checked="@={viewModel.rememberMe}"
             app:layout_constraintStart_toStartOf="@+id/password_text"
             app:layout_constraintTop_toBottomOf="@+id/password_text" />
 

@@ -6,6 +6,7 @@ import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import com.example.tylerwalker.buyyouadrink.R.id.email
 import com.example.tylerwalker.buyyouadrink.model.*
 import com.example.tylerwalker.buyyouadrink.service.AuthService
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -13,6 +14,7 @@ import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.processors.PublishProcessor
+import java.util.NoSuchElementException
 import javax.inject.Inject
 
 class LoginViewModel(app: Application): AndroidViewModel(app), LifecycleObserver {
@@ -47,7 +49,8 @@ class LoginViewModel(app: Application): AndroidViewModel(app), LifecycleObserver
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
         compositeDisposable.add(createAuthFlowDisposable())
-        compositeDisposable.add(createGetUserDisposable())
+        compositeDisposable.add(getUserDisposable())
+        compositeDisposable.add(createUserDisposable())
     }
 
     private fun createAuthFlowDisposable(): Disposable = authEventsFlowable
@@ -60,6 +63,11 @@ class LoginViewModel(app: Application): AndroidViewModel(app), LifecycleObserver
             .subscribe({
                 if (it.status) {
                     Toast.makeText(this.getApplication(), "Login Success.", Toast.LENGTH_SHORT).show()
+
+                    rememberMe.value?.let {
+                        if (!it) localStorage.clearCredentials()
+                    }
+
                     publishAuthEvent(AuthEvent.SignOnSuccess(uid = it.uid!!))
                 } else {
                     if (it.error != null) {
@@ -79,21 +87,55 @@ class LoginViewModel(app: Application): AndroidViewModel(app), LifecycleObserver
                 }
             })
 
-    private fun createGetUserDisposable(): Disposable = authEventsFlowable
+    private fun getUserDisposable(): Disposable = authEventsFlowable
             .filter { it is AuthEvent.SignOnSuccess }
-            .flatMap { getUser(it.uid) }
+            .map { it as AuthEvent.SignOnSuccess }
+            .map { rememberUid(it.uid!!) }
+            .flatMap { getUser(it) }
             .subscribe({
+                if (it.error != null) throw it.error
+
                 if (it.status) {
-                    if (localStorage.isFirstRun()) {
-                        publishNavigationEvent(NavigationEvent.OnBoarding)
-                    } else {
-                        publishNavigationEvent(NavigationEvent.Home)
+                    it.user?.let {
+                        localStorage.putCurrentUser(it)
+
+                        if (localStorage.isFirstRun()) {
+                            publishNavigationEvent(NavigationEvent.OnBoarding)
+                        } else {
+                            publishNavigationEvent(NavigationEvent.Home)
+                        }
                     }
                 }
+
+
             }, {
-                Toast.makeText(this.getApplication(), "Could not find a valid user associated with those credentials...", Toast.LENGTH_SHORT).show()
+                if (it is NoSuchElementException) {
+                    publishAuthEvent(AuthEvent.FirstTimeUserSetup)
+                } else {
+                    Toast.makeText(this.getApplication(), "Something went wrong...", Toast.LENGTH_SHORT).show()
+                }
             })
 
+
+    private fun createUserDisposable(): Disposable = authEventsFlowable
+            .filter { it === AuthEvent.FirstTimeUserSetup }
+            .map { it as AuthEvent.FirstTimeUserSetup }
+            .flatMap { createUser() }
+            .subscribe({
+                if (it.error != null) throw it.error
+
+                it.user?.let {
+                    localStorage.putCurrentUser(it)
+                    publishNavigationEvent(NavigationEvent.OnBoarding)
+                } ?: localStorage.clearCurrentUser()
+            }, {
+                Log.d("LoginViewModel", "create user error: $it")
+                Toast.makeText(this.getApplication(), "Something went wrong...", Toast.LENGTH_SHORT).show()
+            })
+
+
+
+    private fun rememberUid(uid: String): String = uid.apply { localStorage.putCurrentUid(uid) }
 
     private fun getCredentials(authEvent: AuthEvent.SignOn): Credentials {
         authEvent.credentials?.let {
@@ -105,16 +147,33 @@ class LoginViewModel(app: Application): AndroidViewModel(app), LifecycleObserver
 
     private fun rememberCredentials(credentials: Credentials): Credentials = credentials.apply {
         rememberMe.value?.let {
-            if (it) localStorage.putCredentials(this)
+            if (it) {
+                localStorage.shouldRememberMe(true)
+            } else {
+                localStorage.shouldRememberMe(false)
+            }
         }
+
+        localStorage.putCredentials(this)
     }
 
     private fun attemptSignOn(credentials: Credentials): Flowable<AuthResponse> = authService.login(credentials).toFlowable()
 
     private fun getUser(uid: String?): Flowable<UserResponse> {
         if (uid == null) return Flowable.error(Exception("Bad UID"))
-        return userRepository.getUser(uid).toFlowable()
+        return userRepository.getUser(uid)
     }
+
+    private fun createUser(): Flowable<UserResponse> {
+        val currentUid = localStorage.getCurrentUid()
+        val credentials = localStorage.getSavedCredentials()
+
+        if (currentUid == null) return Flowable.error(Exception("Bad UID"))
+        if (credentials == null) return Flowable.error(Exception("Bad credentials"))
+
+        return userRepository.createUser(credentials.email, currentUid)
+    }
+
 
     private fun validateEmailAddress(email: String?): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
@@ -133,7 +192,7 @@ class LoginViewModel(app: Application): AndroidViewModel(app), LifecycleObserver
                 email.value?.let { email ->
                     password.value?.let { password ->
                         Toast.makeText(this.getApplication(), "Logging in...", Toast.LENGTH_SHORT).show()
-                        publishAuthEvent(AuthEvent.SignOn(Credentials(email, password)))
+                        publishAuthEvent(AuthEvent.SignOn(Credentials(email.trim(), password.trim())))
                     }
                 }
             } else {

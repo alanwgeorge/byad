@@ -89,21 +89,21 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val builder = LatLngBounds.builder()
 
         if (targetUser == null) {
-            targetUser = User("0", "?", "?", Coordinates(37.8716F, -122.2727F), "Coffee")
+            targetUser = User("0", Coordinates(37.8716F, -122.2727F), drinks = "Coffee")
         }
 
         if (sourceUser == null) {
-            sourceUser = User("1", "??", "??", Coordinates(37.86F, -122.2755F), "Coffee")
+            sourceUser = User("1", Coordinates(37.86F, -122.2755F), drinks = "BubbleTea")
         }
 
         sourceUser?.let {
             val sourceLoc = LatLng(it.location.latitude.toDouble(), it.location.longitude.toDouble())
-            sourceMarker = map?.addMarker(MarkerOptions().position(sourceLoc).title("${it.first_name} ${it.last_name}").icon(BitmapDescriptorFactory.defaultMarker()))
+            sourceMarker = map?.addMarker(MarkerOptions().position(sourceLoc).title(it.display_name).icon(BitmapDescriptorFactory.defaultMarker()))
         }
 
         targetUser?.let {
             val targetLoc = LatLng(it.location.latitude.toDouble(), it.location.longitude.toDouble())
-            targetMarker = map?.addMarker(MarkerOptions().position(targetLoc).title("${it.first_name} ${it.last_name}").icon(BitmapDescriptorFactory.defaultMarker()))
+            targetMarker = map?.addMarker(MarkerOptions().position(targetLoc).title(it.display_name).icon(BitmapDescriptorFactory.defaultMarker()))
             builder.include(targetMarker?.position)
         }
 
@@ -179,15 +179,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 toggleCategories()
 
-                targetUser?.favorite_drink?.let {
-                    when (it) {
-                        "Coffee" -> toggleCategory(Drink.Coffee)
-                        "Juice" -> toggleCategory(Drink.Juice)
-                        "Beer" -> toggleCategory(Drink.Beer)
-                        "BubbleTea" -> toggleCategory(Drink.BubbleTea)
-                        else -> toggleCategories()
+                targetUser?.drinks?.let {
+                    if (it.isEmpty()) toggleCategories()
+                    it.split(",").forEach {
+                        when (it) {
+                            "Coffee" -> toggleCategory(Drink.Coffee)
+                            "Juice" -> toggleCategory(Drink.Juice)
+                            "Beer" -> toggleCategory(Drink.Beer)
+                            "BubbleTea" -> toggleCategory(Drink.BubbleTea)
+                            else -> {}
+                        }
                     }
-                }
+                } ?: toggleCategories()
             }
         }
     }
@@ -307,7 +310,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         putString("placeName", marker.title)
         putString("beverageType", marker.tag as String)
         putString("locationName", locationService.getLocationName(this@MapActivity, Coordinates(marker.position.latitude.toFloat(), marker.position.longitude.toFloat())))
-        putString("inviteeName", targetUser?.first_name + " " + targetUser?.last_name)
+        putString("inviteeName", targetUser?.display_name)
     }
 
     private fun vectorToBitmap(@DrawableRes id: Int, @ColorInt color: Int? = null): BitmapDescriptor {

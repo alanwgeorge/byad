@@ -31,8 +31,8 @@ class ProfileActivity : AppCompatActivity() {
     val mock_image_url = "https://bloximages.chicago2.vip.townnews.com/willmarradio.com/content/tncms/assets/v3/editorial/8/73/873d38ba-8bf1-11e7-80ce-93f5c9c5517d/59a41515a69cd.image.jpg"
     val mock_image_url_2 = "https://res.cloudinary.com/wells-fargo/image/upload/v1531196082/selfie_400_400.jpg"
 
-    val users = arrayOf(User("1", "Tyler", "Walker", Coordinates(37.8716F, -122.2727F), "Beer", "Drinking beer is the best", mock_image_url),
-            User("2", "Kelsi", "Yuan", Coordinates(37.7749F, -122.4194F), "Tea", "Tea is the best!", mock_image_url_2))
+    val users = arrayOf(User("1", Coordinates(37.8716F, -122.2727F), "yo", "Tyler Walker", "abc@123.com", "1234567890", "yo", "Coffee", mock_image_url),
+            User("2", Coordinates(37.7749F, -122.4194F), "hi", "Kelsi Yuan", "abc@123.com", "1234567890", "hi", "BubbleTea", mock_image_url_2))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +50,11 @@ class ProfileActivity : AppCompatActivity() {
             val profile_location_text_view = findViewById<TextView>(R.id.profile_location_text)
             val profile_caption_text_view = findViewById<TextView>(R.id.profile_caption_text)
 
-            image_url?.let {
+            profile_image?.let {
                 ImageLoader(profile_image_view).execute(it)
             }
 
-            profile_name_text_view.text = "$first_name $last_name"
+            profile_name_text_view.text = "$display_name"
             profile_caption_text_view.text = caption
 
             val location = locationService.getLocationName(context, location)
@@ -70,11 +70,6 @@ fun transitionToMap(view: View) {
     intent.putExtra("user", user)
     startActivity(intent)
 }
-
-
-
-
-
 
 
 

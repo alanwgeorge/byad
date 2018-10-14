@@ -55,9 +55,16 @@ class LoginActivity : AppCompatActivity() {
             binding.viewModel = this
             lifecycle.addObserver(this)
 
-            email.value = "abc@123.com"
-            password.value = "password"
-            rememberMe.value = localStorage.rememberMe()
+            localStorage.rememberMe()?.let { shouldRememberMe ->
+                if (shouldRememberMe) {
+                    localStorage.getSavedCredentials()?.let {
+                        email.value = it.email
+                        password.value = it.password
+                    }
+                }
+
+                rememberMe.value = shouldRememberMe
+            }
 
             email.observe(this@LoginActivity, Observer {
                 Log.d("LoginActivity", "email: $it")
@@ -69,6 +76,10 @@ class LoginActivity : AppCompatActivity() {
 
             isFormValid.observe(this@LoginActivity, Observer {
                 Log.d("LoginActivity", "isFormValid(): $it")
+            })
+
+            rememberMe.observe(this@LoginActivity, Observer {
+                Log.d("LoginActivity", "rememberMe: $it")
             })
         }
 
