@@ -1,70 +1,90 @@
 package com.example.tylerwalker.buyyouadrink.activity.home
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.AsyncTask
 import android.support.constraint.ConstraintLayout
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import com.example.tylerwalker.buyyouadrink.R
-import com.example.tylerwalker.buyyouadrink.model.User
-import java.io.InputStream
+import com.example.tylerwalker.buyyouadrink.model.ListItem
+import com.example.tylerwalker.buyyouadrink.model.ListItemType
+import com.example.tylerwalker.buyyouadrink.util.toBitmap
+import com.example.tylerwalker.buyyouadrink.util.toRoundedDrawable
+import kotlinx.android.synthetic.main.recycler_element.view.*
+import kotlinx.android.synthetic.main.recycler_element_header.view.*
 
-class Adapter(private val data: Array<User>, val activity: HomeScreen): RecyclerView.Adapter<Adapter.ViewHolder>() {
-    class ViewHolder(val element: ConstraintLayout): RecyclerView.ViewHolder(element)
+class Adapter(val activity: HomeScreen): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var listItems: List<ListItem> = ArrayList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val element = LayoutInflater.from(parent.context)
-                .inflate(R.layout.recycler_element, parent, false) as ConstraintLayout
-        return ViewHolder(element)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val nameTextView = holder.element.findViewById<TextView>(R.id.recycler_element_name_text)
-        val captionTextView = holder.element.findViewById<TextView>(R.id.recycler_element_caption_text)
-        val imageView = holder.element.findViewById<ImageView>(R.id.recycler_element_image)
-        val button = holder.element.findViewById<Button>(R.id.recycler_element_button)
-        val user = data[position]
-        nameTextView.text = "${user.display_name}"
-        captionTextView.text = "${user.caption}"
-
-        if (user.profile_image != null) {
-            ImageLoader(imageView).execute(user.profile_image)
-        }
-
-        button.setOnClickListener {
-            activity.transitionToProfile(data[position].user_id)
-        }
-    }
-
-    override fun getItemCount(): Int = data.size
-
-    inner class ImageLoader(val image: ImageView): AsyncTask<String, Unit, Bitmap>() {
-
-        override fun doInBackground(vararg urls: String): Bitmap {
-            var bitmap: Bitmap? = null
-            try {
-                val inputStream: InputStream = java.net.URL(urls[0]).openStream()
-                bitmap = BitmapFactory.decodeStream(inputStream)
-            } catch (e: Exception) {
-                Log.e("ERROR", e.message)
-                e.printStackTrace()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            0 -> {
+                val element = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.recycler_element_header, parent, false) as ConstraintLayout
+                 HeaderViewHolder(element, activity)
             }
-            return bitmap!!
+            else -> {
+                val element = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.recycler_element, parent, false) as ConstraintLayout
+                 UserViewHolder(element, activity)
+            }
         }
+    }
 
-        override fun onPostExecute(result: Bitmap?) {
-            val roundDrawable = RoundedBitmapDrawableFactory.create(activity.resources, result)
-            roundDrawable.isCircular = true
-            image.setImageDrawable(roundDrawable)
-            image.adjustViewBounds = true
-            image.scaleType = ImageView.ScaleType.FIT_CENTER
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val viewType = getItemViewType(position)
+
+        when (viewType) {
+            0 -> {
+                holder as HeaderViewHolder
+                holder.bind(listItems[position] as ListItem.ListItemHeader)
+            }
+            else -> {
+                holder as UserViewHolder
+                holder.bind(listItems[position] as ListItem.UserListItem)
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        listItems[position].type
+        return when(listItems[position].type) {
+            ListItemType.ListItemHeaderType -> 0
+            ListItemType.UserListItemType -> 1
+        }
+    }
+
+    override fun getItemCount(): Int = listItems.size
+
+    fun updateUsers(items: List<ListItem>?) {
+        items?.let {
+            listItems = it
+            notifyDataSetChanged()
+        }
+    }
+
+    class HeaderViewHolder(val element: ConstraintLayout, val activity: HomeScreen): RecyclerView.ViewHolder(element) {
+        fun bind(listItem: ListItem.ListItemHeader) = with (element) {
+            listItem.label!!.let {
+                recycler_element_header_text.text = it
+            }
+        }
+    }
+
+    class UserViewHolder(val element: ConstraintLayout, val activity: HomeScreen): RecyclerView.ViewHolder(element) {
+        fun bind(listItem: ListItem.UserListItem) = with (element) {
+
+            recycler_element_name_text.text = listItem.user!!.display_name
+            recycler_element_caption_text.text = listItem.user.bio
+            recycler_element_button.setOnClickListener { activity.transitionToProfile(listItem.user.user_id) }
+
+            listItem.user.profile_image.let {
+                if (!it.isEmpty()) {
+                    val round = it.toBitmap()?.toRoundedDrawable(activity.resources)
+                    round?.let {roundDrawable ->
+                        recycler_element_image.setImageDrawable(roundDrawable)
+                    }
+                }
+            }
         }
     }
 }

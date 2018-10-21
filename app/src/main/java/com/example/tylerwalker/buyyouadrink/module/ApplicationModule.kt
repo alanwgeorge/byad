@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import io.reactivex.Flowable
 import io.reactivex.processors.PublishProcessor
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -38,6 +39,10 @@ class ApplicationModule(val context: Context) {
     fun provideLocalStorage(): LocalStorage {
         return LocalStorage(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideCurrentUser(localStorage: LocalStorage): User = localStorage.getCurrentUser() ?: User()
 
     @Provides
     @Singleton

@@ -8,6 +8,9 @@ import android.graphics.drawable.Drawable
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.util.Base64
 import android.util.Log
+import com.example.tylerwalker.buyyouadrink.model.Coordinates
+import com.google.type.LatLng
+import java.lang.Math.*
 
 
 fun Bitmap.toEncodedString(): String? = try {
@@ -34,3 +37,20 @@ fun String.toBitmap(): Bitmap? = try {
         Log.d("KTExtensions", "$e")
         null
     }
+
+
+const val R = 6372.8 // in kilometers
+
+fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+    val λ1 = toRadians(lat1)
+    val λ2 = toRadians(lat2)
+    val Δλ = toRadians(lat2 - lat1)
+    val Δφ = toRadians(lon2 - lon1)
+    return 2 * R * asin(sqrt(pow(sin(Δλ / 2), 2.0) + pow(sin(Δφ / 2), 2.0) * cos(λ1) * cos(λ2)))
+}
+
+fun Coordinates.distanceTo(other: Coordinates): Float {
+    val (lat1, lon1) = this
+    val (lat2, lon2) = other
+    return haversine(lat1.toDouble(), lon1.toDouble(), lat2.toDouble(), lon2.toDouble()).toFloat()
+}

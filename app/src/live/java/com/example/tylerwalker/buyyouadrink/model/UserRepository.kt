@@ -41,6 +41,25 @@ class UserRepository {
                 .toFlowable()
     }
 
+    fun getAllUsers(): Flowable<UsersResponse> {
+        return RxFirestore.getCollection(firestore.collection("users"))
+                .map {
+                    val users = mutableListOf<User>()
+                    it.documents.forEach {
+                        it.data?.let { userMap ->
+                            try {
+                                val user = parseUser(userMap)
+                                users.add(user)
+                            } catch (e: Throwable) {
+                                Log.d(logTag, "getAllUsers() error parsing user: $userMap")
+                            }
+                        }
+                    }
+                    UsersResponse(users, true, null)
+                }
+                .toFlowable()
+    }
+
 
     fun createUser(email: String, uid: String): Flowable<UserResponse> {
         val userMap = mutableMapOf<String, Any>(
@@ -97,3 +116,4 @@ class UserRepository {
 }
 
 data class UserResponse(val user: User?, val status: Boolean, val error: Throwable? = null)
+data class UsersResponse(val users: List<User>?, val status: Boolean, val error: Throwable? = null)

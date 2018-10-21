@@ -1,44 +1,49 @@
 package com.example.tylerwalker.buyyouadrink.activity.home
 
-import android.Manifest
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.View
-import android.widget.ImageView
 import com.example.tylerwalker.buyyouadrink.R
-import com.example.tylerwalker.buyyouadrink.activity.Settings.SettingsActivity
 import com.example.tylerwalker.buyyouadrink.activity.messages.MessagesActivity
 import com.example.tylerwalker.buyyouadrink.activity.profile.ProfileActivity
 import com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity
+import com.example.tylerwalker.buyyouadrink.databinding.ActivityHomeBinding
+import com.example.tylerwalker.buyyouadrink.model.*
 import com.example.tylerwalker.buyyouadrink.module.App
-import com.example.tylerwalker.buyyouadrink.model.Coordinates
-import com.example.tylerwalker.buyyouadrink.model.User
 import com.example.tylerwalker.buyyouadrink.service.LocationService
+import com.example.tylerwalker.buyyouadrink.util.BERKELEY
+import com.example.tylerwalker.buyyouadrink.util.distanceTo
+import io.reactivex.Flowable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 class HomeScreen : AppCompatActivity() {
 
-    @Inject lateinit var locationService: LocationService
-
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: Adapter
     private lateinit var viewManager: RecyclerView.LayoutManager
 
-    val presenter: HomePresenter = HomePresenter()
+    lateinit var viewModel: HomeViewModel
 
-    val image_url = "https://bloximages.chicago2.vip.townnews.com/willmarradio.com/content/tncms/assets/v3/editorial/8/73/873d38ba-8bf1-11e7-80ce-93f5c9c5517d/59a41515a69cd.image.jpg"
-    val image_url_2 = "https://res.cloudinary.com/wells-fargo/image/upload/v1531196082/selfie_400_400.jpg"
+    @Inject
+    lateinit var navigationEventsFlowable: Flowable<NavigationEvent>
 
-    val testUsers = arrayOf(
-            User("1", Coordinates(37.8716F, -122.2727F), "I like coffee.", "Tyler Walker", "abc@123.com", "1234567890", "Yo", "Coffee", image_url, ""),
-            User("2", Coordinates(37.7749F, 122.4194F), "Let's have some cocktails tonight!", "Kelsi Yuan", "1234567890", "Hi", "BubbleTea", "BubbleTea", image_url_2))
+    @Inject
+    lateinit var userRepository: UserRepository
+
+    @Inject
+    lateinit var currentUser: User
+
+    var trash = CompositeDisposable()
+
+    private val logTag = "HomeScreen"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,41 +51,132 @@ class HomeScreen : AppCompatActivity() {
 
         setContentView(R.layout.activity_home)
 
-        App().getComponent(this).inject(this)
+        val component = App().getComponent(this)
+        component.inject(this)
 
-        setupPresenter()
+        val binding = DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home)
+        binding.setLifecycleOwner(this)
+
+        ViewModelProviders.of(this).get(HomeViewModel::class.java).apply {
+            viewModel = this
+            component.inject(this)
+            lifecycle.addObserver(this)
+            binding.viewModel = this
+
+            listItems.observe(this@HomeScreen, Observer {
+                viewAdapter.updateUsers(it)
+            })
+        }
+
         setupRecyclerView()
-        setupToolbar()
 
+        trash.add(getAllUsers())
+        trash.add(observeNavigationEvents())
     }
 
-    private fun setupPresenter() {
-        presenter.activity = this
-        presenter.locationService = locationService
-    }
+    private fun getAllUsers(): Disposable = userRepository.getAllUsers()
+            .doOnNext { Log.d(logTag, "Got users: ${it.users}") }
+            .map { it.users?.filter { user -> user.user_id != currentUser.user_id } }
+            .map { sortUsersByProximity(it) }
+            .subscribe({
+                it?.let { users ->
+                    viewModel.users.value = users
+                    viewModel.listItems.value = groupUsersByPoximity(users)
+                }
+
+            }, {
+                Log.e(logTag, "getAllUsers(): error: ${it.localizedMessage}")
+            })
+
+    private fun observeNavigationEvents(): Disposable = navigationEventsFlowable
+            .doOnNext { Log.d(logTag, "Navigation Event: $it") }
+            .doOnNext {
+                when (it) {
+                    is NavigationEvent.Settings -> transitionToSettings()
+                    is NavigationEvent.Messages -> transitionToMessages()
+                    is NavigationEvent.Profile -> transitionToProfile("0")
+                }
+            }
+            .subscribe()
 
     private fun setupRecyclerView() {
         viewManager = LinearLayoutManager(this)
-        viewAdapter = Adapter(testUsers, this)
+        viewAdapter = Adapter(this)
 
         recyclerView = findViewById<RecyclerView>(R.id.recycler).apply {
-            setHasFixedSize(true)
             layoutManager = viewManager
             adapter = viewAdapter
         }
     }
 
-    private fun setupToolbar() {
-        val settingsImage = findViewById<ImageView>(R.id.toolbar_image_left)
-        val messagesImage = findViewById<ImageView>(R.id.toolbar_image_right)
+    private fun sortUsersByProximity(users: List<User>): List<User> {
+        currentUser.location.let {
+            val safeCurrentLocation: Coordinates = if (it.latitude == 0F) {
+                    BERKELEY
+                } else {
+                    Coordinates(it.latitude, it.longitude)
+                }
 
-        settingsImage.setOnClickListener {
-            transitionToSettings(it)
+            return users.sortedBy { user ->
+                safeCurrentLocation.distanceTo(user.location)
+            }
+        }
+    }
+
+    private fun groupUsersByPoximity(users: List<User>): List<ListItem> {
+        val augmentedUsersList = mutableListOf<ListItem>()
+
+        val safeCurrentLocation: Coordinates = if (currentUser.location.latitude == 0F) {
+            BERKELEY
+        } else {
+            Coordinates(currentUser.location.latitude, currentUser.location.longitude)
         }
 
-        messagesImage.setOnClickListener {
-            transitionToMessages(it)
+        var currentLabelIndex = -1
+
+        users.forEach {user ->
+            val it = safeCurrentLocation.distanceTo(user.location)
+            when {
+                it < 5F -> {
+                    if (currentLabelIndex == 0) {
+                        augmentedUsersList.add(ListItem.UserListItem(user))
+                    } else {
+                        augmentedUsersList.add(ListItem.ListItemHeader("Within 5 miles"))
+                        augmentedUsersList.add(ListItem.UserListItem(user))
+                        currentLabelIndex = 0
+                    }
+                }
+                it < 10F -> {
+                    if (currentLabelIndex == 1) {
+                        augmentedUsersList.add(ListItem.UserListItem(user))
+                    } else {
+                        augmentedUsersList.add(ListItem.ListItemHeader("Within 10 miles"))
+                        augmentedUsersList.add(ListItem.UserListItem(user))
+                        currentLabelIndex = 1
+                    }
+                }
+                it < 25F -> {
+                    if (currentLabelIndex == 2) {
+                        augmentedUsersList.add(ListItem.UserListItem(user))
+                    } else {
+                        augmentedUsersList.add(ListItem.ListItemHeader("Within 25 miles"))
+                        augmentedUsersList.add(ListItem.UserListItem(user))
+                        currentLabelIndex = 2
+                    }
+                }
+                else -> {
+                    if (currentLabelIndex >= 3) {
+                        augmentedUsersList.add(ListItem.UserListItem(user))
+                    } else {
+                        augmentedUsersList.add(ListItem.ListItemHeader("Really far away"))
+                        augmentedUsersList.add(ListItem.UserListItem(user))
+                        currentLabelIndex = 3
+                    }
+                }
+            }
         }
+
+        return augmentedUsersList
     }
 
     fun transitionToProfile(user_id: String) {
@@ -89,32 +185,14 @@ class HomeScreen : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun transitionToSettings(view: View) {
+    fun transitionToSettings() {
         val intent = Intent(this, SetupProfileActivity::class.java)
         startActivity(intent)
     }
 
-    fun transitionToMessages(view: View) {
+    fun transitionToMessages() {
         val intent = Intent(this, MessagesActivity::class.java)
         startActivity(intent)
     }
 
-    fun needsPermissions(): Boolean {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-    }
-
-    fun promptForPermissions(): Unit {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 1)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            1 -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    Log.d("RESULT", "Do something about location")
-                }
-            }
-        }
-    }
 }

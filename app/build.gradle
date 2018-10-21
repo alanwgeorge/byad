@@ -125,6 +125,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.2'
     implementation 'com.google.firebase:firebase-firestore:17.1.0'
 
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 
 }
 
