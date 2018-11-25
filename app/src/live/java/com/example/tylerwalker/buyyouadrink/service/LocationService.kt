@@ -21,19 +21,46 @@ class LocationService {
         val geocoder = Geocoder(context)
         val (lat, long) = coordinates
         Log.d("getLocationName()", "$lat, $long")
-        val list = geocoder.getFromLocation(lat.toDouble(), long.toDouble(), 1)
-        if (list != null && list.size > 0) {
-            Log.d("getLocationName()", "list:  $list")
+        try {
+            val list = geocoder.getFromLocation(lat.toDouble(), long.toDouble(), 1)
+            if (list != null && list.size > 0) {
+                Log.d("getLocationName()", "list:  $list")
 
-            val address: Address = list[0]
-            Log.d("getLocationName()", "address: $address")
+                val address: Address = list[0]
+                Log.d("getLocationName()", "address: $address")
 
-            val result = address.locality
-            Log.d("getLocationName()", "locality: $result")
+                val result = address.locality
+                Log.d("getLocationName()", "locality: $result")
 
-            return result
+                return result
+            }
+        } catch(e: Throwable) {
+            return null
         }
 
+
+        return null
+    }
+
+    fun getLocationAddress(context: Context, coordinates: Coordinates): String? {
+        val geocoder = Geocoder(context)
+        val (lat, long) = coordinates
+        val list = geocoder.getFromLocation(lat.toDouble(), long.toDouble(), 1)
+        if (list != null && list.size > 0) {
+            val address: Address = list[0]
+
+            return address.getAddressLine(0)
+        }
+
+        return null
+    }
+
+    fun addressToCoordinates(context: Context, address: String): Coordinates? {
+        val geocoder = Geocoder(context)
+        val loc = geocoder.getFromLocationName(address, 1)
+        loc[0]?.let {
+            return Coordinates(it.latitude.toFloat(), it.longitude.toFloat())
+        }
         return null
     }
 }

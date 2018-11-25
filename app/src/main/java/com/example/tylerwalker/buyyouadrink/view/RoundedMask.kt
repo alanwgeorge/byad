@@ -7,15 +7,14 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import com.example.tylerwalker.buyyouadrink.R
+import com.example.tylerwalker.buyyouadrink.R.drawable.gray
 
 class RoundedMask(context: Context, attrs: AttributeSet): View(context, attrs) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val white = ResourcesCompat.getColor(resources, android.R.color.white, null)
-    private val black = ResourcesCompat.getColor(resources, android.R.color.black, null)
-    private val gray = ResourcesCompat.getColor(resources, R.color.lightgray, null)
+
     var bitmap: Bitmap? = null
+
     private val rect = Rect()
-    private val bitmapRect = Rect()
     private val center = PaintCoordinates((measuredWidth/2).toFloat(), (measuredHeight/2).toFloat())
     private val bounds = PaintBounds(measuredWidth.toFloat(), measuredHeight.toFloat())
 
@@ -34,30 +33,28 @@ class RoundedMask(context: Context, attrs: AttributeSet): View(context, attrs) {
         Log.d("onDraw() bounds", "${bounds.width}, ${bounds.height}")
         Log.d("onDraw() arcTop", "${arcTop}")
 
-//        canvas?.drawColor(white)
-
-        paint.color = black
-
-//        canvas?.drawArc(0F, arcTop, bounds.width, bounds.height, 0F, 180F, true, paint)
-//        canvas?.drawRect(0F, 0F, bounds.width, (bounds.height - (bounds.height - arcTop)/ 2) + .5F, paint)
-//
-//        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.ADD)
-
         rect.set(0, 0, bounds.width.toInt(), bounds.height.toInt())
-        bitmapRect.set(0, 0, bitmap?.width ?: 0, bitmap?.height ?: 0)
 
         if (bitmap == null) {
-            paint.color = gray
+            paint.color = primary
 
             canvas?.drawArc(0F, arcTop, bounds.width, bounds.height, 0F, 180F, true, paint)
             canvas?.drawRect(0F, 0F, bounds.width, (bounds.height - (bounds.height - arcTop)/ 2) + .5F, paint)
 
-        }
+        } else {
+            val tempBitmap = Bitmap.createBitmap(bounds.width.toInt(), bounds.height.toInt(), Bitmap.Config.ARGB_8888)
+            val tempCanvas = Canvas(tempBitmap)
 
-        bitmap?.let {
-            Log.d("RoundedMask", "drawing bitmap: $bitmap")
-            canvas?.drawBitmap(bitmap, rect, rect, paint)
-            return
+            paint.color = black
+            tempCanvas.drawRect(0F, 0F, bounds.width, (bounds.height - (bounds.height - arcTop)/ 2) + .5F, paint)
+            tempCanvas.drawArc(0F, arcTop, bounds.width, bounds.height, 0F, 180F, true, paint)
+
+            paint.xfermode = srcIn
+            tempCanvas.drawBitmap(bitmap!!, 0F, 0F, paint)
+
+            paint.xfermode = null
+
+            canvas?.drawBitmap(tempBitmap, 0F, 0F, paint)
         }
     }
 
@@ -65,6 +62,10 @@ class RoundedMask(context: Context, attrs: AttributeSet): View(context, attrs) {
         this.bitmap = _bitmap
         invalidate()
     }
+
+    private val black = ResourcesCompat.getColor(resources, android.R.color.black, null)
+    private val primary = ResourcesCompat.getColor(resources, R.color.colorPrimary, null)
+    private val srcIn = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
 }
 
 data class PaintCoordinates(var left: Float, var top: Float)

@@ -1,7 +1,6 @@
 package com.example.tylerwalker.buyyouadrink.activity.profile
 
 import android.app.Activity
-import android.app.Application
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -11,15 +10,12 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.constraint.ConstraintLayout
-import android.support.v4.app.ActivityCompat.startActivityForResult
-import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.example.tylerwalker.buyyouadrink.R
-import com.example.tylerwalker.buyyouadrink.R.id.*
 import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
 import com.example.tylerwalker.buyyouadrink.databinding.ActivitySetupProfileBinding
 import com.example.tylerwalker.buyyouadrink.model.Drink
@@ -27,16 +23,15 @@ import com.example.tylerwalker.buyyouadrink.model.NavigationEvent
 import com.example.tylerwalker.buyyouadrink.model.ProfileEvent
 import com.example.tylerwalker.buyyouadrink.module.App
 import com.example.tylerwalker.buyyouadrink.service.LocationService
+import com.example.tylerwalker.buyyouadrink.util.rotate
 import com.example.tylerwalker.buyyouadrink.util.toBitmap
 import com.example.tylerwalker.buyyouadrink.util.toEncodedString
 import com.example.tylerwalker.buyyouadrink.util.toRoundedDrawable
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment
 import io.reactivex.Flowable
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.processors.PublishProcessor
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_setup_profile.*
 import java.io.IOException
@@ -50,6 +45,11 @@ class SetupProfileActivity : AppCompatActivity() {
     lateinit var profileEventsFlowable: Flowable<ProfileEvent>
     @Inject
     lateinit var navigationEventsFlowable: Flowable<NavigationEvent>
+
+    private val favoriteDrinkDialogTag = "favoriteDrinkDialog"
+    private val favoriteDrinkDialog: FavoriteDrinkDialog by lazy {
+        FavoriteDrinkDialog()
+    }
 
     var trash = CompositeDisposable()
 
@@ -87,7 +87,7 @@ class SetupProfileActivity : AppCompatActivity() {
                 it.bio.let { bio.value = it; bio_text.setText(it) }
                 it.profile_image.let {
                     profileImage.value = it
-                    val round = it.toBitmap()?.toRoundedDrawable(resources)
+                    val round = it.toBitmap()?.rotate()?.toRoundedDrawable(resources)
                     profile_image.setImageDrawable(round)
                     profile_image.scaleType = ImageView.ScaleType.CENTER_CROP
                 }
@@ -95,6 +95,45 @@ class SetupProfileActivity : AppCompatActivity() {
                 it.drinks
                     .split(",")
                     .forEach { drinkName -> addDrinkToSelections(getDrink(drinkName)) }
+                it.favoriteDrink?.let {  drinkName ->
+                    if (!drinkName.isNullOrEmpty()) {
+                        favoriteDrink.value = getDrink(drinkName)
+                    }
+                }
+            }
+
+            favoriteDrink.observe(this@SetupProfileActivity, Observer {
+                it?.let {
+                    when (it) {
+                        Drink.Coffee -> {
+                            favorite_drink_text.text = "Coffee"
+                            favorite_drink_icon.setImageDrawable(getDrawable(R.drawable.ic_coffee))
+                            favorite_drink_icon.scaleType = ImageView.ScaleType.FIT_XY
+                        }
+                        Drink.Juice -> {
+                            favorite_drink_text.text = "Juice"
+                            favorite_drink_icon.setImageDrawable(getDrawable(R.drawable.ic_juice))
+                            favorite_drink_icon.scaleType = ImageView.ScaleType.FIT_XY
+                        }
+                        Drink.BubbleTea -> {
+                            favorite_drink_text.text = "BubbleTea"
+                            favorite_drink_icon.setImageDrawable(getDrawable(R.drawable.ic_bubble_tea))
+                            favorite_drink_icon.scaleType = ImageView.ScaleType.FIT_XY
+                        }
+                        Drink.Beer -> {
+                            favorite_drink_text.text = "Beer"
+                            favorite_drink_icon.setImageDrawable(getDrawable(R.drawable.ic_beer))
+                            favorite_drink_icon.scaleType = ImageView.ScaleType.FIT_XY
+                        }
+                    }
+                    favorite_drink_text.setTextColor(getColor(R.color.colorPrimary))
+                }
+            })
+
+            favoriteDrink.value.let {
+                if (it == null) {
+                    favoriteDrinkDialog.show(supportFragmentManager, favoriteDrinkDialogTag)
+                }
             }
         }
 
@@ -102,6 +141,9 @@ class SetupProfileActivity : AppCompatActivity() {
         trash.add(observeNavigationEvents())
         trash.add(observeChooseProfileImageEvents())
         trash.add(observeChooseCoverImageEvents())
+        trash.add(observeDismissFavoriteDrinkDialogEvents())
+        trash.add(observeShowFavoriteDrinkDialogEvents())
+
     }
 
     private fun observeDrinkToggleEvents(): Disposable = profileEventsFlowable
@@ -128,26 +170,44 @@ class SetupProfileActivity : AppCompatActivity() {
             .doOnNext { transitionToHome() }
             .subscribe()
 
+    private fun observeShowFavoriteDrinkDialogEvents(): Disposable = profileEventsFlowable
+            .filter { it === ProfileEvent.ShowFavoriteDrinkDialog }
+            .doOnNext {
+                if (!favoriteDrinkDialog.isAdded) {
+                    favoriteDrinkDialog.show(supportFragmentManager, favoriteDrinkDialogTag)
+                }
+            }
+            .subscribe()
+
+    private fun observeDismissFavoriteDrinkDialogEvents(): Disposable = profileEventsFlowable
+            .filter { it === ProfileEvent.DismissFavoriteDrinkDialog }
+            .doOnNext { favoriteDrinkDialog.dismiss() }
+            .subscribe()
+
     private fun updateUIForDrink(drink: Drink) {
         Log.d(logTag, "updateUIForDrink(): $drink")
 
         val view = getLayout(drink)
-        val darkColor = resources.getColor(android.R.color.holo_blue_dark, null)
+
+        val primary = ContextCompat.getColor(this, R.color.colorPrimary)
+        val black = resources.getColor(android.R.color.black, null)
 
         if (drink.isSelected) {
             view.getChildAt(0).let {
                 it as ImageView
-                it.setColorFilter(darkColor, PorterDuff.Mode.SRC_IN)
+                it.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
             }
 
-            view.getChildAt(1).let {
-                it as TextView
-                it.setTextColor(darkColor)
+            when (drink) {
+                Drink.Coffee -> { coffee_text.setTextColor(primary) }
+                Drink.Juice -> { juice_text.setTextColor(primary)}
+                Drink.BubbleTea -> { bubble_tea_text.setTextColor(primary)}
+                Drink.Beer -> { beer_text.setTextColor(primary)}
             }
 
             view.getChildAt(2).let {
                 it as ImageView
-                it.setColorFilter(darkColor, PorterDuff.Mode.SRC_IN)
+                it.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
             }
         } else {
             view.getChildAt(0).let {
@@ -155,11 +215,12 @@ class SetupProfileActivity : AppCompatActivity() {
                 it.clearColorFilter()
             }
 
-            view.getChildAt(1).let {
-                it as TextView
-                it.setTextColor(resources.getColor(android.R.color.black, null))
+            when (drink) {
+                Drink.Coffee -> { coffee_text.setTextColor(black) }
+                Drink.Juice -> { juice_text.setTextColor(black)}
+                Drink.BubbleTea -> { bubble_tea_text.setTextColor(black)}
+                Drink.Beer -> { beer_text.setTextColor(black)}
             }
-
             view.getChildAt(2).let {
                 it as ImageView
                 it.clearColorFilter()

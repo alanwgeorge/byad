@@ -14,6 +14,7 @@ import android.widget.Toast
 import com.example.tylerwalker.buyyouadrink.R
 import com.example.tylerwalker.buyyouadrink.R.drawable.user
 import com.example.tylerwalker.buyyouadrink.R.id.email
+import com.example.tylerwalker.buyyouadrink.activity.map.InvitationViewModel.Companion.logTag
 import com.example.tylerwalker.buyyouadrink.model.*
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.places.Place
@@ -37,6 +38,7 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
     val coverImage = MutableLiveData<String>()
     val profileImage = MutableLiveData<String>()
     val drinkSelections = MutableLiveData<MutableList<Drink>>()
+    val favoriteDrink = MutableLiveData<Drink>()
 
     @Inject
     lateinit var profileEventsProcessor: PublishProcessor<ProfileEvent>
@@ -137,6 +139,10 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
             user.drinks = it.joinToString(",")
         }
 
+        favoriteDrink.value?.let {
+            user.favoriteDrink = it.name
+        }
+
         Log.d(logTag, "validateInput() success, user: $user")
         return user
     }
@@ -176,6 +182,26 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
 
     private fun isDrinkSelected(drink: Drink) = drinkSelections.value?.contains(drink) ?: false
 
+    fun selectJuice(view: View) { selectFavoriteDrink(Drink.Juice) }
+    fun selectCoffee(view: View) { selectFavoriteDrink(Drink.Coffee) }
+    fun selectBubbleTea(view: View) { selectFavoriteDrink(Drink.BubbleTea) }
+    fun selectBeer(view: View) { selectFavoriteDrink(Drink.Beer) }
+
+    fun selectFavoriteDrink(drink: Drink) {
+        favoriteDrink.value = drink
+    }
+
+    fun done(view: View) {
+        when (favoriteDrink.value) {
+            null -> { Toast.makeText(getApplication(), "Selection is required.", Toast.LENGTH_SHORT).show() }
+            else -> { profileEventsProcessor.onNext(ProfileEvent.DismissFavoriteDrinkDialog) }
+        }
+    }
+
+    fun showFavoriteDrinkDialog(view: View) {
+        profileEventsProcessor.onNext(ProfileEvent.ShowFavoriteDrinkDialog)
+    }
+
     inner class GooglePlaceSelectionListener: PlaceSelectionListener {
         override fun onPlaceSelected(place: Place?) {
             place?.latLng?.let {
@@ -198,7 +224,7 @@ class SetupProfileViewModel(app: Application): AndroidViewModel(app), LifecycleO
     }
 
     fun chooseCoverImage(view: View) {
-        publishProfileEvent(ProfileEvent.ChooseProfileImage)
+        publishProfileEvent(ProfileEvent.ChooseCoverImage)
     }
 
     fun publishProfileEvent(event: ProfileEvent) {

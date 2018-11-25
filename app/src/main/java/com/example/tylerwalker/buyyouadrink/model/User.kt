@@ -14,11 +14,15 @@ data class User(
         var bio: String = "",
         var drinks: String = "",
         var profile_image: String = "",
-        var cover_image: String = ""
+        var cover_image: String = "",
+        var conversations: Any? = null,
+        var favoriteDrink: String = ""
+
 ): Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             Coordinates(parcel.readFloat(), parcel.readFloat()),
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -40,6 +44,7 @@ data class User(
         parcel.writeString(drinks)
         parcel.writeString(profile_image)
         parcel.writeString(cover_image)
+        parcel.writeString(favoriteDrink)
     }
 
     override fun describeContents(): Int {
@@ -85,5 +90,17 @@ sealed class Drink {
     object Juice: Drink() {
         override val name = "Juice"
         override val type = "healthy"
+    }
+
+    companion object {
+        fun getDrink(drinkName: String): Drink {
+            return when(drinkName) {
+                "Coffee" -> Drink.Coffee
+                "BubbleTea" -> Drink.BubbleTea
+                "Beer" -> Drink.Beer
+                "Juice" -> Drink.Juice
+                else -> Drink.Coffee
+            }
+        }
     }
 }

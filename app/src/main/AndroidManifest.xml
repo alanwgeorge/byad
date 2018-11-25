@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name="com.example.tylerwalker.buyyouadrink.module.App"
+        android:name=".module.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -32,31 +32,48 @@
 
         <activity
             android:name=".activity.splash.SplashScreen"
-            android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.home.HomeScreen" android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.home.HomeScreen"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.login.LoginActivity"
             android:label="@string/title_activity_login"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.profile.ProfileActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.Settings.SettingsActivity" android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.ProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.Settings.SettingsActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".activity.login.SignUpActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.onboarding.OnBoarding" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.messages.MessagesActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.map.MapActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.profile.SetupProfileActivity" android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.login.SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.onboarding.OnBoarding"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.messages.MessagesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.map.MapActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.SetupProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.messages.ConversationActivity"></activity>
     </application>
 
 </manifest>

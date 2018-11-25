@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    >
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        app:cardBackgroundColor="@color/default_bubble_color_rcv"
+        app:cardCornerRadius="8dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/sender_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:layout_marginBottom="4dp"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/default_message_text_size"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="Timi"
+                tools:visibility="visible"
+                tools:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/message_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:gravity="center_vertical|start"
+                android:lines="4"
+                android:textColor="@color/black"
+                android:textSize="@dimen/default_message_text_size"
+                tools:text="My name is Timi and I am hoping this text will span multiple lines."
+                tools:textColor="@color/nearwhite"/>
+
+            <TextView
+                android:id="@+id/what_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:gravity="center_vertical|start"
+                android:lines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/default_message_text_size"
+                tools:text="Coffee"
+                tools:textColor="@color/nearwhite"/>
+
+            <TextView
+                android:id="@+id/where_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:gravity="center_vertical|start"
+                android:lines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/default_message_text_size"
+                tools:text="Peet's Coffee"
+                tools:textColor="@color/nearwhite"/>
+
+            <TextView
+                android:id="@+id/address_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:gravity="center_vertical|start"
+                android:lines="1"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/default_message_text_size"
+                tools:text="1234 vine"
+                tools:textColor="@color/nearwhite" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="4dp" />
+
+            <TextView
+                android:id="@+id/timestamp_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:gravity="center_vertical|end"
+                android:textColor="@color/default_tstamp_color_rcv"
+                android:textSize="@dimen/default_timestamp_text_size"
+                tools:text="12:10 am" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/buttonLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <Button
+                    android:id="@+id/acceptButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/colorPrimary"
+                    android:text="Accept"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/rejectButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/red"
+                    android:text="Decline"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent=".5"
+                    />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/confirmationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="You accepted this invitation!"
+                />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>

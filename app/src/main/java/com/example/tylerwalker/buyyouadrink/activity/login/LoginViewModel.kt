@@ -61,6 +61,7 @@ class LoginViewModel(app: Application): AndroidViewModel(app), LifecycleObserver
             .map { rememberCredentials(it) }
             .flatMap { attemptSignOn(it) }
             .subscribe({
+                Log.d("LoginViewModel", "Auth Response: $it")
                 if (it.status) {
                     Toast.makeText(this.getApplication(), "Login Success.", Toast.LENGTH_SHORT).show()
 
@@ -89,9 +90,11 @@ class LoginViewModel(app: Application): AndroidViewModel(app), LifecycleObserver
 
     private fun getUserDisposable(): Disposable = authEventsFlowable
             .filter { it is AuthEvent.SignOnSuccess }
+            .doOnNext { Log.d("LoginViewModel", "Auth Event: $it") }
             .map { it as AuthEvent.SignOnSuccess }
             .map { rememberUid(it.uid!!) }
             .flatMap { getUser(it) }
+            .doOnNext {  Log.d("LoginViewModel", "getUser(): $it") }
             .subscribe({
                 if (it.error != null) throw it.error
 
@@ -104,7 +107,8 @@ class LoginViewModel(app: Application): AndroidViewModel(app), LifecycleObserver
                         } else {
                             publishNavigationEvent(NavigationEvent.Home)
                         }
-                    }
+
+                    } ?: throw Exception("No User")
                 }
 
 

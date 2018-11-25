@@ -1,8 +1,12 @@
 package com.example.tylerwalker.buyyouadrink.module
 
 import android.content.Context
+import com.example.tylerwalker.buyyouadrink.activity.messages.ConversationActivity
+import com.example.tylerwalker.buyyouadrink.activity.messages.MessageEvent
 import com.example.tylerwalker.buyyouadrink.model.*
 import com.example.tylerwalker.buyyouadrink.service.AuthService
+import com.example.tylerwalker.buyyouadrink.service.ConversationService
+import com.example.tylerwalker.buyyouadrink.service.InvitationService
 import com.example.tylerwalker.buyyouadrink.service.LocationService
 import dagger.Module
 import dagger.Provides
@@ -29,6 +33,18 @@ class ApplicationModule(val context: Context) {
     @Singleton
     fun provideUserRepository(): UserRepository {
         return UserRepository()
+    }
+
+    @Provides
+    @Singleton
+    fun provideInvitationService(): InvitationService {
+        return InvitationService()
+    }
+
+    @Provides
+    @Singleton
+    fun provideConversationService(): ConversationService {
+        return ConversationService()
     }
 
     @Provides
@@ -67,4 +83,20 @@ class ApplicationModule(val context: Context) {
     @Provides
     @Singleton
     fun provideProfileEventsFlowable(processor: PublishProcessor<ProfileEvent>): Flowable<ProfileEvent> = processor
+
+    @Provides
+    @Singleton
+    fun provideInvitationEventsProcessor(): PublishProcessor<InvitationEvent> = PublishProcessor.create()
+
+    @Provides
+    @Singleton
+    fun provideInvitationEventsFlowable(processor: PublishProcessor<InvitationEvent>): Flowable<InvitationEvent> = processor
+
+    @Provides
+    @Singleton
+    fun provideMessageEventsProcessor(): PublishProcessor<MessageEvent> = PublishProcessor.create()
+
+    @Provides
+    @Singleton
+    fun provideMessageEventsFlowable(processor: PublishProcessor<MessageEvent>): Flowable<MessageEvent> = processor
 }

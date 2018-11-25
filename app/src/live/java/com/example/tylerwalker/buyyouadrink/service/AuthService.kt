@@ -8,6 +8,7 @@ import com.example.tylerwalker.buyyouadrink.model.Credentials
 import com.example.tylerwalker.buyyouadrink.model.User
 import com.google.firebase.auth.FirebaseAuth
 import durdinapps.rxfirebase2.RxFirebaseAuth
+import io.reactivex.Flowable
 import io.reactivex.Single
 import javax.inject.Singleton
 

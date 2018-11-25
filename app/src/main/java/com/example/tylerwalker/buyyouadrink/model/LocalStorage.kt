@@ -1,13 +1,9 @@
 package com.example.tylerwalker.buyyouadrink.model
 
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.system.Os.remove
 import android.util.Log
-import com.example.tylerwalker.buyyouadrink.R.id.email
-import com.example.tylerwalker.buyyouadrink.module.App
-import com.google.android.gms.flags.impl.SharedPreferencesFactory.getSharedPreferences
+import com.example.tylerwalker.buyyouadrink.activity.map.InvitationViewModel.Companion.logTag
 import com.google.gson.Gson
 
 class LocalStorage(val context: Context) {
@@ -23,7 +19,10 @@ class LocalStorage(val context: Context) {
     private val sharedPreferencesSavedPasswordKey = "saved_password_key"
     private val sharedPreferencesCurrentUserIDKey = "current_uid"
 
-    fun getCurrentUser(): User? = Gson().fromJson(sharedPreferences.getString(sharedPreferencesCurrentUserKey, null), User::class.java)
+    fun getCurrentUser(): User? {
+        return Gson().fromJson(sharedPreferences.getString(sharedPreferencesCurrentUserKey, null), User::class.java)
+
+    }
     fun putCurrentUser(user: User?) {
         Log.d("LocalStorage", "put user: $user")
         val json = Gson().toJson(user)
@@ -40,9 +39,14 @@ class LocalStorage(val context: Context) {
     fun getSavedCredentials(): Credentials? {
         sharedPreferences.getString(sharedPreferencesSavedEmailKey, null)?.let { email ->
             sharedPreferences.getString(sharedPreferencesSavedPasswordKey, null)?.let { password ->
-                return Credentials(email, password)
+                val creds = Credentials(email, password)
+                Log.d(logTag, "getSavedCredentials() $creds")
+
+                return creds
             }
         }
+
+        Log.d(logTag, "getSavedCredentials() null")
 
         return null
     }

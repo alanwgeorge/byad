@@ -45,15 +45,16 @@
         app:layout_constraintStart_toStartOf="@+id/recycler_element_name_text"
         app:layout_constraintTop_toBottomOf="@+id/recycler_element_name_text" />
 
-    <Button
+    <ImageButton
         android:id="@+id/recycler_element_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/circular_button"
-        android:text=">"
+        android:backgroundTint="@color/colorPrimary"
+        android:src="@android:drawable/ic_media_play"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/recycler_element_image"

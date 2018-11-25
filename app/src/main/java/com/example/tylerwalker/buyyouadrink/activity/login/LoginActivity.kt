@@ -40,6 +40,8 @@ class LoginActivity : AppCompatActivity() {
     @Inject
     lateinit var navigationEventsFlowable: Flowable<NavigationEvent>
 
+    private val logTag = "LoginActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -92,6 +94,7 @@ class LoginActivity : AppCompatActivity() {
         compositeDisposable.add(observeForms())
         compositeDisposable.add(observeNavigateHome())
         compositeDisposable.add(observeNavigateOnBoarding())
+        compositeDisposable.add(logNavigationEvents())
     }
 
     private fun observeForms(): Disposable = authEventsFlowable
@@ -105,6 +108,10 @@ class LoginActivity : AppCompatActivity() {
     private fun observeNavigateOnBoarding(): Disposable = navigationEventsFlowable
             .filter { it === NavigationEvent.OnBoarding }
             .subscribe { transitionToOnBoarding() }
+
+    private fun logNavigationEvents(): Disposable = navigationEventsFlowable
+            .doOnNext { Log.d(logTag, "Navigation Event: $it") }
+            .subscribe()
 
     private fun setupRegisterButton() = sign_up_button.findViewById<Button>(R.id.primary_button)?.let {
         it.text = getString(R.string.register)

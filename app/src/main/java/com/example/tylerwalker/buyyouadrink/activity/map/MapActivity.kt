@@ -14,24 +14,17 @@ import com.example.tylerwalker.buyyouadrink.service.YelpService
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
-import com.yelp.fusion.client.models.Category
 import com.yelp.fusion.client.models.SearchResponse
 import kotlinx.android.synthetic.main.activity_map.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-import android.graphics.drawable.VectorDrawable
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.content.res.ResourcesCompat
-import android.graphics.drawable.Drawable
-import android.provider.MediaStore.Images.Media.getBitmap
 import android.support.annotation.ColorInt
 import android.support.annotation.DrawableRes
 import android.widget.Toast
-import com.example.tylerwalker.buyyouadrink.R.id.*
 import com.example.tylerwalker.buyyouadrink.module.App
 import com.example.tylerwalker.buyyouadrink.service.LocationService
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -46,7 +39,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var sourceUser: User? = null
 
     private val manager = supportFragmentManager
-    private var invitationFragment: Invitation? = null
+    private var invitationFragment: InvitationFragment? = null
 
     val visibleDrinks = mutableListOf(Drink.Coffee, Drink.Juice, Drink.Beer, Drink.BubbleTea)
 
@@ -289,7 +282,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             manager.beginTransaction().remove(it).commit()
         }
 
-        invitationFragment = Invitation().apply {
+        invitationFragment = InvitationFragment().apply {
             arguments = buildBundle(marker)
 
             supportFragmentManager.beginTransaction()
@@ -310,7 +303,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         putString("placeName", marker.title)
         putString("beverageType", marker.tag as String)
         putString("locationName", locationService.getLocationName(this@MapActivity, Coordinates(marker.position.latitude.toFloat(), marker.position.longitude.toFloat())))
+        putFloat("latitude", marker.position.latitude.toFloat())
+        putFloat("longitude", marker.position.longitude.toFloat())
         putString("inviteeName", targetUser?.display_name)
+        putString("inviteeId", targetUser?.user_id)
+        putString("inviteeImage", targetUser?.profile_image)
     }
 
     private fun vectorToBitmap(@DrawableRes id: Int, @ColorInt color: Int? = null): BitmapDescriptor {

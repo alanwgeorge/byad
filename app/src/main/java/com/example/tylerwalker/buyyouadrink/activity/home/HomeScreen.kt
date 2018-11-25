@@ -10,13 +10,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import com.example.tylerwalker.buyyouadrink.R
+import com.example.tylerwalker.buyyouadrink.R.string.conversations
 import com.example.tylerwalker.buyyouadrink.activity.messages.MessagesActivity
 import com.example.tylerwalker.buyyouadrink.activity.profile.ProfileActivity
 import com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity
 import com.example.tylerwalker.buyyouadrink.databinding.ActivityHomeBinding
 import com.example.tylerwalker.buyyouadrink.model.*
 import com.example.tylerwalker.buyyouadrink.module.App
-import com.example.tylerwalker.buyyouadrink.service.LocationService
 import com.example.tylerwalker.buyyouadrink.util.BERKELEY
 import com.example.tylerwalker.buyyouadrink.util.distanceTo
 import io.reactivex.Flowable
@@ -31,6 +31,8 @@ class HomeScreen : AppCompatActivity() {
     private lateinit var viewManager: RecyclerView.LayoutManager
 
     lateinit var viewModel: HomeViewModel
+
+    private var blackList: List<String> = listOf()
 
     @Inject
     lateinit var navigationEventsFlowable: Flowable<NavigationEvent>
@@ -47,7 +49,6 @@ class HomeScreen : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
 
         setContentView(R.layout.activity_home)
 
@@ -70,23 +71,52 @@ class HomeScreen : AppCompatActivity() {
 
         setupRecyclerView()
 
+        trash.add(getBlackList())
         trash.add(getAllUsers())
         trash.add(observeNavigationEvents())
     }
 
     private fun getAllUsers(): Disposable = userRepository.getAllUsers()
             .doOnNext { Log.d(logTag, "Got users: ${it.users}") }
-            .map { it.users?.filter { user -> user.user_id != currentUser.user_id } }
+            .map { it.users?.filter { user -> true } }
             .map { sortUsersByProximity(it) }
+            .map { filterBlacklistedUsers(it) }
             .subscribe({
                 it?.let { users ->
-                    viewModel.users.value = users
-                    viewModel.listItems.value = groupUsersByPoximity(users)
+                    updateViewModel(users)
                 }
 
             }, {
                 Log.e(logTag, "getAllUsers(): error: ${it.localizedMessage}")
             })
+
+    private fun getBlackList(): Disposable = userRepository.getBlackList(currentUser.user_id)
+            .map { it.users }
+            .doOnNext {
+                Log.d(logTag,"get black list: $it")
+                it?.let {
+                    blackList = it
+                    viewModel.users.value?.let {
+                        updateViewModel(filterBlacklistedUsers(it))
+                    }
+                }
+            }
+            .doOnError {
+                Log.d(logTag, "get black list error: ${it.localizedMessage}")
+            }
+            .subscribe()
+
+
+    private fun filterBlacklistedUsers(users: List<User>): List<User> {
+        return users.filter {
+            !blackList.contains(it.user_id)
+        }
+    }
+
+    private fun updateViewModel(users: List<User>) {
+        viewModel.users.value = users
+        viewModel.listItems.value = groupUsersByPoximity(users)
+    }
 
     private fun observeNavigationEvents(): Disposable = navigationEventsFlowable
             .doOnNext { Log.d(logTag, "Navigation Event: $it") }

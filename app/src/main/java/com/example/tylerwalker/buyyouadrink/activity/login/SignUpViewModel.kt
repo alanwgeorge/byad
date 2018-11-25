@@ -1,106 +1,115 @@
 package com.example.tylerwalker.buyyouadrink.activity.login
 
-import android.app.Activity
 import android.app.Application
 import android.arch.lifecycle.*
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import com.example.tylerwalker.buyyouadrink.activity.home.HomeScreen
 import com.example.tylerwalker.buyyouadrink.activity.onboarding.OnBoarding
-import com.example.tylerwalker.buyyouadrink.model.AuthResponse
-import com.example.tylerwalker.buyyouadrink.model.Credentials
-import com.example.tylerwalker.buyyouadrink.model.LocalStorage
+import com.example.tylerwalker.buyyouadrink.model.*
 import com.example.tylerwalker.buyyouadrink.service.AuthService
-import com.google.android.gms.flags.impl.SharedPreferencesFactory.getSharedPreferences
-import com.google.gson.Gson
+import io.reactivex.Flowable
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.processors.PublishProcessor
 import io.reactivex.schedulers.Schedulers
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 class SignUpViewModel(app: Application): AndroidViewModel(app), LifecycleObserver {
-    lateinit var activity: SignUpActivity
+    companion object {
+        private const val logTag = "SignUpViewModel"
+    }
+    @Inject
+    lateinit var authEventsProcessor: PublishProcessor<AuthEvent>
+
+    @Inject
+    lateinit var authEventsFlowable: Flowable<AuthEvent>
 
     @Inject
     lateinit var authService: AuthService
 
-    @Inject
-    lateinit var localStorage: LocalStorage
+    private var trash = CompositeDisposable()
 
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
     val name = MutableLiveData<String>()
     val confirm = MutableLiveData<String>()
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart() {
+        trash.add(observeRegisterEvents())
+    }
 
     fun register(view: View) {
-        if (!verifyInput()) return
-        Log.d("user", "name: ${name.value}, email: ${email.value}, password: ${password.value}")
-        asyncLogin(name.value!!, email.value!!, password.value!!)
+        authEventsProcessor.onNext(AuthEvent.Register)
     }
 
     private fun verifyInput(): Boolean {
-        val emailIsValid = email.value?.let { Patterns.EMAIL_ADDRESS.matcher(it).matches() } ?: false
-        val passwordIsValid = password.value?.let {
-            it.length >= 8 && it == confirm.value
-        } ?: false
-        val nameIsValid = name.value?.let { it.length >= 8 } ?: false
 
-        Log.d("user", "validation, name: ${nameIsValid}, email: ${emailIsValid}, password: ${passwordIsValid}")
+        if (email.value == null || name.value == null || password.value == null || confirm.value == null) {
+            Toast.makeText(getApplication(), "All fields are required.", Toast.LENGTH_LONG).show()
+            return false
+        }
 
-        return emailIsValid && passwordIsValid && nameIsValid
+        if (name.value!!.length < 4) {
+            Toast.makeText(getApplication(), "Name must be at least 4 characters.", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email.value).matches()) {
+            Toast.makeText(getApplication(), "Must be a valid email address.", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        if (password.value!!.length < 8) {
+            Toast.makeText(getApplication(), "Password must be at least 8 characters.", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        if (password.value!! != confirm.value!!) {
+            Toast.makeText(getApplication(), "Confirm password did not match.", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        return true
     }
 
-    private fun asyncLogin(name: String, email: String, password: String) {
-        try {
-            authService.register(Credentials(email, password))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(RegisterObserver())
-        } catch(error: Exception) {
-            Log.d("NETWORK", error.message)
-        }
-    }
+    private fun observeRegisterEvents(): Disposable = authEventsFlowable
+            .filter { it === AuthEvent.Register }
+            .doOnNext { Log.d(logTag, "AuthEvent: Register") }
+            .flatMap {
+                if (verifyInput()) {
+                    Flowable.just(Credentials(email.value!!, password.value!!))
+                } else {
+                    Flowable.empty()
+                }
+            }
+            .doOnNext { Toast.makeText(getApplication(), "Registering...", Toast.LENGTH_SHORT).show() }
+            .flatMap {
+                authService.register(it)
+                        .toFlowable()
+            }
+            .subscribe({
+                if (!it.status) {
+                    Toast.makeText(getApplication(), it.error?.localizedMessage ?: "Something went wrong...", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(getApplication(), "Register success!", Toast.LENGTH_SHORT).show()
+                    authEventsProcessor.onNext(AuthEvent.RegisterSuccess)
+                }
+            }, {
+                Log.d(logTag, it.localizedMessage)
+                Toast.makeText(getApplication(), "Something went wrong...", Toast.LENGTH_LONG).show()
+            })
 
-    inner class RegisterObserver: SingleObserver<AuthResponse> {
-        override fun onSubscribe(d: Disposable) {
-        }
-
-        override fun onError(e: Throwable) {
-            Log.d("SignUpViewModel", e.message)
-        }
-
-        override fun onSuccess(t: AuthResponse) {
-            handleResponse(t)
-        }
-    }
-
-    private fun handleResponse(response: AuthResponse) {
-        Log.d("user", "response: ${response}")
-        if (!response.status) {
-            return
-        }
-
-        var intent: Intent?
-
-        if (localStorage.isFirstRun()) {
-            intent = Intent(activity, OnBoarding::class.java)
-        } else {
-            intent = Intent(activity, HomeScreen::class.java)
-        }
-
-        activity.startActivity(intent)
-
-
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop() {
+        trash.clear()
+        trash = CompositeDisposable()
     }
 
 }

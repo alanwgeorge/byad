@@ -2,6 +2,7 @@ package com.example.tylerwalker.buyyouadrink.activity.messages
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.support.constraint.ConstraintLayout
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
@@ -13,10 +14,16 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.tylerwalker.buyyouadrink.R
+import com.example.tylerwalker.buyyouadrink.R.drawable.user
 import com.example.tylerwalker.buyyouadrink.model.Conversation
+import com.example.tylerwalker.buyyouadrink.util.toBitmap
+import com.example.tylerwalker.buyyouadrink.util.toRounded
+import kotlinx.android.synthetic.main.recycler_element.view.*
 import java.io.InputStream
 
-class Adapter(private val data: Array<Conversation>, val activity: MessagesActivity): RecyclerView.Adapter<Adapter.ViewHolder>() {
+class Adapter(val activity: MessagesActivity): RecyclerView.Adapter<Adapter.ViewHolder>() {
+    private var conversations: List<Conversation> = ArrayList()
+
     class ViewHolder(val element: ConstraintLayout): RecyclerView.ViewHolder(element)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,42 +33,36 @@ class Adapter(private val data: Array<Conversation>, val activity: MessagesActiv
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val nameTextView = holder.element.findViewById<TextView>(R.id.recycler_element_name_text)
-        val captionTextView = holder.element.findViewById<TextView>(R.id.recycler_element_caption_text)
-        val imageView = holder.element.findViewById<ImageView>(R.id.recycler_element_image)
-        val button = holder.element.findViewById<Button>(R.id.recycler_element_button)
-        val user = data[position]
-        nameTextView.text = "${user.first_name} ${user.last_name}"
-        captionTextView.text = "${user.last_message}"
+        with (holder.element) {
+            recycler_element_name_text.text = conversations[position].with
+            recycler_element_caption_text.text = conversations[position].placeName
 
-        if (user.image_url != null) {
-            ImageLoader(imageView).execute(user.image_url)
+            val drinkDrawable: Drawable? = when (conversations[position].beverageType) {
+                "BubbleTea" -> { activity.getDrawable(R.drawable.ic_bubble_tea) }
+                "Beer" -> { activity.getDrawable(R.drawable.ic_beer) }
+                "Juice" -> { activity.getDrawable(R.drawable.ic_juice) }
+                else -> { activity.getDrawable(R.drawable.ic_coffee) }
+            }
+
+            conversations[position].withImage.let {
+                if (it.isEmpty()) {
+                    drinkDrawable?.let { drink -> recycler_element_image.setImageDrawable(drink) }
+                } else {
+                    recycler_element_image.setImageBitmap(it.toBitmap()?.toRounded())
+                }
+            }
+
+
+            recycler_element_button.setOnClickListener {
+                activity.transitionToConversation(conversations[position])
+            }
         }
-
     }
 
-    override fun getItemCount(): Int = data.size
+    override fun getItemCount(): Int = conversations.size
 
-    inner class ImageLoader(val image: ImageView): AsyncTask<String, Unit, Bitmap>() {
-
-        override fun doInBackground(vararg urls: String): Bitmap {
-            var bitmap: Bitmap? = null
-            try {
-                val inputStream: InputStream = java.net.URL(urls[0]).openStream()
-                bitmap = BitmapFactory.decodeStream(inputStream)
-            } catch (e: Exception) {
-                Log.e("ERROR", e.message)
-                e.printStackTrace()
-            }
-            return bitmap!!
-        }
-
-        override fun onPostExecute(result: Bitmap?) {
-            val roundDrawable = RoundedBitmapDrawableFactory.create(activity.resources, result)
-            roundDrawable.isCircular = true
-            image.setImageDrawable(roundDrawable)
-            image.adjustViewBounds = true
-            image.scaleType = ImageView.ScaleType.FIT_CENTER
-        }
+    fun updateMessages(conversations: List<Conversation>) {
+        this.conversations = conversations
+        notifyDataSetChanged()
     }
 }

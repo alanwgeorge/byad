@@ -84,7 +84,8 @@ class UserRepository {
                 "location" to GeoPoint(user.location.latitude.toDouble(), user.location.longitude.toDouble()),
                 "profile_image" to user.profile_image,
                 "cover_image" to user.cover_image,
-                "drinks" to user.drinks
+                "drinks" to user.drinks,
+                "favorite_drink" to user.favoriteDrink
         )
         return RxFirestore.setDocument(oldDoc, newDoc)
                 .doOnComplete {
@@ -96,6 +97,37 @@ class UserRepository {
                 .toSingle {
                     UserResponse(user, true)
                 }
+    }
+
+    fun blockUser(currentUser: String, userToBlock: String): Flowable<UserResponse> {
+        val collection = firestore.collection("users")
+                .document(currentUser)
+                .collection("blocked_users")
+                .document(userToBlock)
+
+        return RxFirestore
+                .setDocument(collection, mapOf("uid" to userToBlock))
+                .toSingle {
+                    UserResponse(null, true)
+                }
+                .onErrorReturn { UserResponse(null, false) }
+                .toFlowable()
+    }
+
+    fun getBlackList(currentUser: String): Flowable<BlackListResponse> {
+        val collection = firestore.collection("users")
+                .document(currentUser)
+                .collection("blocked_users")
+
+        return RxFirestore.getCollection(collection)
+                .map {
+                    val users = mutableListOf<String>()
+                    it.documents.forEach {
+                        users.add(it.id)
+                    }
+                    BlackListResponse(users, null)
+                }
+                .toFlowable()
     }
 
 
@@ -110,6 +142,8 @@ class UserRepository {
         user.profile_image = userMap["profile_image"] as String? ?: ""
         user.cover_image = userMap["cover_image"] as String? ?: ""
         user.drinks = userMap["drinks"] as String? ?: ""
+        user.conversations = userMap["conversations"] as List<Any?>?
+        user.favoriteDrink = userMap["favorite_drink"] as String? ?: ""
 
         return user
     }
@@ -117,3 +151,4 @@ class UserRepository {
 
 data class UserResponse(val user: User?, val status: Boolean, val error: Throwable? = null)
 data class UsersResponse(val users: List<User>?, val status: Boolean, val error: Throwable? = null)
+data class BlackListResponse(val users: List<String>?, val error: Throwable? = null)
