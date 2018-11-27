@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.tylerwalker.buyyouadrink.activity.map.InvitationViewModel" />
+            type="io.tylerwalker.buyyouadrink.activity.map.InvitationViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout

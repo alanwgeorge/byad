@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tylerwalker.buyyouadrink.activity.onboarding.OnBoarding">
+    tools:context="io.tylerwalker.buyyouadrink.activity.onboarding.OnBoarding">
 
     <Button
         android:id="@+id/next_button"
@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:onClick="transitionToSetupProfile"/>
 
-    <com.example.tylerwalker.buyyouadrink.view.BlurryView
+    <io.tylerwalker.buyyouadrink.view.BlurryView
         android:id="@+id/on_boarding_background_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -50,7 +50,7 @@
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/search" />
 
-    </com.example.tylerwalker.buyyouadrink.view.BlurryView>
+    </io.tylerwalker.buyyouadrink.view.BlurryView>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/onboarding_pager"

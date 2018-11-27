@@ -5,13 +5,13 @@
 
     <data>
 
-        <import type="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity.ProfileImage" />
-        <import type="com.example.tylerwalker.buyyouadrink.model.Drink" />
-        <import type="com.example.tylerwalker.buyyouadrink.model.ProfileEvent" />
+        <import type="io.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity.ProfileImage" />
+        <import type="io.tylerwalker.buyyouadrink.model.Drink" />
+        <import type="io.tylerwalker.buyyouadrink.model.ProfileEvent" />
 
         <variable
             name="viewmodel"
-            type="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileViewModel" />
+            type="io.tylerwalker.buyyouadrink.activity.profile.SetupProfileViewModel" />
     </data>
 
     <android.support.v4.widget.NestedScrollView
@@ -21,9 +21,9 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity">
+            tools:context="io.tylerwalker.buyyouadrink.activity.profile.SetupProfileActivity">
 
-            <com.example.tylerwalker.buyyouadrink.view.RoundedMask
+            <io.tylerwalker.buyyouadrink.view.RoundedMask
                 android:id="@+id/profile_cover_image"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
@@ -160,11 +160,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
                     android:hint="Location"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="parent"
-                    tools:layout_editor_absoluteY="5dp" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout

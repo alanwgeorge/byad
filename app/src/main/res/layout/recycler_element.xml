@@ -62,6 +62,7 @@
                 android:layout_marginTop="8dp"
                 android:text="Caption"
                 android:textSize="12sp"
+                android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="@+id/recycler_element_image"
                 app:layout_constraintEnd_toStartOf="@+id/recycler_element_button"
                 app:layout_constraintStart_toStartOf="@+id/recycler_element_name_text"

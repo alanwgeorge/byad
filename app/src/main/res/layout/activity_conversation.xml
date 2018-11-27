@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tylerwalker.buyyouadrink.activity.messages.ConversationActivity">
+    tools:context="io.tylerwalker.buyyouadrink.activity.messages.ConversationActivity">
 
 
 
-    <com.example.chat.ChatView
+    <io.tylerwalker.chat.ChatView
         android:id="@+id/chat_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

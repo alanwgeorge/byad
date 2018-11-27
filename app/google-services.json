@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:587225191822:android:62a76f26f21e485c",
         "android_client_info": {
-          "package_name": "com.example.tylerwalker.buyyouadrink"
+          "package_name": "io.tylerwalker.buyyouadrink"
         }
       },
       "oauth_client": [
@@ -41,7 +41,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:587225191822:android:43cbbdc1e8cb06f3",
         "android_client_info": {
-          "package_name": "com.example.tylerwalker.buyyouadrink.live"
+          "package_name": "io.tylerwalker.buyyouadrink.live"
         }
       },
       "oauth_client": [
@@ -72,7 +72,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:587225191822:android:14ca3899620c6469",
         "android_client_info": {
-          "package_name": "com.example.tylerwalker.buyyouadrink.mock"
+          "package_name": "io.tylerwalker.buyyouadrink.mock"
         }
       },
       "oauth_client": [

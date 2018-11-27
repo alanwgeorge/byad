@@ -5,14 +5,14 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.tylerwalker.buyyouadrink.activity.profile.ProfileViewModel" />
+            type="io.tylerwalker.buyyouadrink.activity.profile.ProfileViewModel" />
     </data>
 <android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tylerwalker.buyyouadrink.activity.profile.ProfileActivity">
+    tools:context="io.tylerwalker.buyyouadrink.activity.profile.ProfileActivity">
 
-    <com.example.tylerwalker.buyyouadrink.view.RoundedMask
+    <io.tylerwalker.buyyouadrink.view.RoundedMask
         android:id="@+id/profile_cover_image"
         android:layout_width="0dp"
         android:layout_height="150dp"

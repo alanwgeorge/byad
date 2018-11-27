@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.tylerwalker.buyyouadrink.activity.profile.SetupProfileViewModel" />
+            type="io.tylerwalker.buyyouadrink.activity.profile.SetupProfileViewModel" />
     </data>
     
 <android.support.constraint.ConstraintLayout

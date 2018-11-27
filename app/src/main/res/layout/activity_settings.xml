@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tylerwalker.buyyouadrink.activity.Settings.SettingsActivity">
+    tools:context="io.tylerwalker.buyyouadrink.activity.Settings.SettingsActivity">
 
     <ImageView
         android:id="@+id/profile_image"
